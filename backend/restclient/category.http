@@ -1,0 +1,27 @@
+###CREATE A CATEGORY
+POST http://localhost:3000/api/category/create
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZjRjOGU0OS0wMWMxLTQ1MTgtODc4Ny0wNTEzYzI1MWIwMjEiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3MjAxNTI1ODgsImV4cCI6MTcyMDIzODk4OH0.K8e4mvnLlcsw16RAUzlBTpMUQErWP5aXAhkFhr2SKM4
+Content-Type: application/json
+
+{
+    "name": "earphones"
+}
+
+###GET ALL CATEGORIES
+GET http://localhost:3000/api/category/all
+
+###GET CATEGORY BY ID
+GET http://localhost:3000/api/category/6f3c8e4e-124b-4e80-8dab-7ef13b7cf5da
+
+###UPDATE A CATEGORY
+PUT http://localhost:3000/api/category/6f3c8e4e-124b-4e80-8dab-7ef13b7cf5da
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZjRjOGU0OS0wMWMxLTQ1MTgtODc4Ny0wNTEzYzI1MWIwMjEiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3MjAxNTI1ODgsImV4cCI6MTcyMDIzODk4OH0.K8e4mvnLlcsw16RAUzlBTpMUQErWP5aXAhkFhr2SKM4
+Content-Type: application/json
+
+{
+    "name": "Safety"
+}
+
+###DELETE A CATEGORY
+DELETE http://localhost:3000/api/category/6f3c8e4e-124b-4e80-8dab-7ef13b7cf5da
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZjRjOGU0OS0wMWMxLTQ1MTgtODc4Ny0wNTEzYzI1MWIwMjEiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3MjAxNTI1ODgsImV4cCI6MTcyMDIzODk4OH0.K8e4mvnLlcsw16RAUzlBTpMUQErWP5aXAhkFhr2SKM4

@@ -1,0 +1,74 @@
+###CREATE PRODUCT
+POST http://localhost:3000/api/product/create
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZjRjOGU0OS0wMWMxLTQ1MTgtODc4Ny0wNTEzYzI1MWIwMjEiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3MzA5MjYyMzcsImV4cCI6MTczMTAxMjYzN30.OukHR5L9_UOVSxPMejzD5pf_bwlToWWgwEZUh4EqHww
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="name"
+
+Wlisth Men's European Business Waterproof Watch - BLACK
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="shortDescription"
+
+Sleek, durable, and shock-absorbent watch offering superior protection without compromising style.
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="price"
+
+1500.00
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="categoryId"
+
+4d21890b-b7ba-496c-8ddb-5cf240fa420d
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="stockQuantity"
+
+100
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="phone-case.jpg"
+Content-Type: image/jpeg
+
+< /home/earljoe/Downloads/watch.jpg>
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###GET ALL PRODUCTS
+GET http://localhost:3000/api/product/all
+
+###GET PRODUCT BY ID
+GET http://localhost:3000/api/product/20136c23-0d28-40e8-89fe-0f3bc92563aa
+
+###UPDATE PRODUCT
+PUT http://localhost:3000/api/product/update/20136c23-0d28-40e8-89fe-0f3bc92563aa
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMmU2OWI0NS0zZGM5LTQ2YmItYWUxNy0wMDlkMGY0YzJhMDIiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3MTk0MDgzMDEsImV4cCI6MTcxOTQ5NDcwMX0.zBrU4p4zfBpJwnnautRQQF-SnNV6gDAUwGw2DNkQ7NU
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="name"
+
+Samsung 25 W Fast Type C Charger 25W USB C Adapter
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="shortDescription"
+
+Fast charging for your Samsung devices.
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="price"
+
+1200.00
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="categoryId"
+
+a4b808a5-f604-45ca-a65c-8e0db21c7685
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="stockQuantity"
+
+100
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="phone-case.jpg"
+Content-Type: image/jpeg
+
+< /home/earljoe/Downloads/phone-charger.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###DELETE PRODUCT
+DELETE http://localhost:3000/api/product/delete/56365e5b-a429-469a-af12-f8222fc95a7b
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZjRjOGU0OS0wMWMxLTQ1MTgtODc4Ny0wNTEzYzI1MWIwMjEiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3MjAxNzU2NDQsImV4cCI6MTcyMDI2MjA0NH0.Lfmf4spu_icjV4EdsIo5L9jqfleiTuqfmB-rVqUoFGo
+

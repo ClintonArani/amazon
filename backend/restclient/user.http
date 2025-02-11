@@ -1,0 +1,51 @@
+### REGISTER A USER
+POST http://localhost:3000/api/user/register
+Content-Type: application/json
+
+{
+    "name": "Morine",
+    "email": "morine@gmail.com",
+    "password": "lancewest"
+}
+
+### LOGIN A USER
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+    "email": "",
+    "password": "password"
+}
+
+### GET USER PROFILE
+GET http://localhost:3000/api/user/22e69b45-3dc9-46bb-ae17-009d0f4c2a02
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMmU2OWI0NS0zZGM5LTQ2YmItYWUxNy0wMDlkMGY0YzJhMDIiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE5NDA0NTYxLCJleHAiOjE3MTk0OTA5NjF9.9XLsQ-8nWxE3hGQEtRbMwpMs32J0-oqgjoPZVJKyXcs
+
+### ACTIVATE USER ACCOUNT
+POST http://localhost:3000/api/user/activate
+Content-Type: application/json
+
+{
+    "email": "earljoe06@gmail.com",
+    "activationCode": "2566"
+}
+
+### RESET USER PASSWORD
+POST http://localhost:3000/api/user/reset-password
+Content-Type: application/json
+
+{
+    "email": "phoebemarble@gmail.com",
+    "newPassword": "password123"
+}
+
+### UPDATE USER PROFILE
+PUT http://localhost:3000/api/user/update
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzY2FlNDg3NC0yYmMyLTQ3YWQtOGE3Zi1kMGQyMmVlMjg5NzUiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE5MTM0MTkxLCJleHAiOjE3MTkyMjA1OTF9.283DCItx2QnEQu93BVUzuUlNT5rWDhYjnsP-GThFTNg
+
+{
+    "name": "Angela Kolwa",
+    "email": "phoebemarble@gmail.com",
+    "password": "password"
+}
