@@ -3,9 +3,9 @@ POST http://localhost:3000/api/user/register
 Content-Type: application/json
 
 {
-    "name": "Morine",
-    "email": "morine@gmail.com",
-    "password": "lancewest"
+    "name": "Clinton Omari",
+    "email": "clintonarani@gmail.com",
+    "password": "clinton1234"
 }
 
 ### LOGIN A USER
@@ -13,21 +13,21 @@ POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-    "email": "",
-    "password": "password"
+    "email": "clintonarani@gmail.com",
+    "password": "clinton1234"
 }
 
 ### GET USER PROFILE
-GET http://localhost:3000/api/user/22e69b45-3dc9-46bb-ae17-009d0f4c2a02
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMmU2OWI0NS0zZGM5LTQ2YmItYWUxNy0wMDlkMGY0YzJhMDIiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE5NDA0NTYxLCJleHAiOjE3MTk0OTA5NjF9.9XLsQ-8nWxE3hGQEtRbMwpMs32J0-oqgjoPZVJKyXcs
+GET http://localhost:3000/api/user/c2253f75-8be8-47fc-9ebe-00f7733c9950
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjMjI1M2Y3NS04YmU4LTQ3ZmMtOWViZS0wMGY3NzMzYzk5NTAiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3MzkzNzAwOTQsImV4cCI6MTczOTQ1NjQ5NH0.sTyzOKtveemwQwqOpSWZjk2g8wJb8SH_pH3XlbVtp1A
 
 ### ACTIVATE USER ACCOUNT
 POST http://localhost:3000/api/user/activate
 Content-Type: application/json
 
 {
-    "email": "earljoe06@gmail.com",
-    "activationCode": "2566"
+    "email": "clintonarani@gmail.com",
+    "activationCode": "3724"
 }
 
 ### RESET USER PASSWORD
@@ -35,17 +35,17 @@ POST http://localhost:3000/api/user/reset-password
 Content-Type: application/json
 
 {
-    "email": "phoebemarble@gmail.com",
+    "email": "clintonarani@gmail.com",
     "newPassword": "password123"
 }
 
 ### UPDATE USER PROFILE
 PUT http://localhost:3000/api/user/update
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzY2FlNDg3NC0yYmMyLTQ3YWQtOGE3Zi1kMGQyMmVlMjg5NzUiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE5MTM0MTkxLCJleHAiOjE3MTkyMjA1OTF9.283DCItx2QnEQu93BVUzuUlNT5rWDhYjnsP-GThFTNg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjMjI1M2Y3NS04YmU4LTQ3ZmMtOWViZS0wMGY3NzMzYzk5NTAiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3MzkzNzEzMjQsImV4cCI6MTczOTQ1NzcyNH0.Qqcd6I5KS3FnQAhPyXI2B-6C7YL6V0kQpirO-xyNaOk
 
 {
-    "name": "Angela Kolwa",
-    "email": "phoebemarble@gmail.com",
-    "password": "password"
+    "name": "clinton omari",
+    "email": "clintonarani@gmail.com",
+    "password": "clinton1234"
 }
