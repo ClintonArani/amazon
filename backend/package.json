@@ -12,8 +12,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+<<<<<<< HEAD
     "@prisma/client": "^5.22.0",
     "@types/dotenv": "^8.2.3",
+=======
+    "@prisma/client": "^6.3.1",
+>>>>>>> 3412e0bb3d431de60adf09b3d4acb6a9eac6fde5
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.2.0",
     "concurrently": "^8.2.2",
@@ -37,7 +41,7 @@
     "@types/nodemailer": "^6.4.15",
     "@types/uuid": "^10.0.0",
     "nodemon": "^3.1.4",
-    "prisma": "^5.16.1",
+    "prisma": "^6.3.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.2"
   }

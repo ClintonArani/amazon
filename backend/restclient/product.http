@@ -1,6 +1,6 @@
 ###CREATE PRODUCT
 POST http://localhost:3000/api/product/create
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZjRjOGU0OS0wMWMxLTQ1MTgtODc4Ny0wNTEzYzI1MWIwMjEiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3MzA5MjYyMzcsImV4cCI6MTczMTAxMjYzN30.OukHR5L9_UOVSxPMejzD5pf_bwlToWWgwEZUh4EqHww
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNTQzZTg4Yi01OTA2LTQ2YmQtOGJjZi1kNWY5OTM4MzQzYTMiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzM5Mjc0NTk5LCJleHAiOjE3MzkzNjA5OTl9.kLQbRmoPWNreQ7HLVkNAa2pRUtn-7dkg-IEVmeF--fI
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
