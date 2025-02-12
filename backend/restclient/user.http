@@ -3,9 +3,9 @@ POST http://localhost:3000/api/user/register
 Content-Type: application/json
 
 {
-    "name": "Morine",
-    "email": "morine@gmail.com",
-    "password": "lancewest"
+    "name": "clinton",
+    "email": "clinton@gmail.com",
+    "password": "clinton"
 }
 
 ### LOGIN A USER
@@ -13,20 +13,20 @@ POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-    "email": "",
-    "password": "password"
+    "email": "morine@gmail.com",
+    "password": "morine"
 }
 
 ### GET USER PROFILE
 GET http://localhost:3000/api/user/22e69b45-3dc9-46bb-ae17-009d0f4c2a02
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMmU2OWI0NS0zZGM5LTQ2YmItYWUxNy0wMDlkMGY0YzJhMDIiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE5NDA0NTYxLCJleHAiOjE3MTk0OTA5NjF9.9XLsQ-8nWxE3hGQEtRbMwpMs32J0-oqgjoPZVJKyXcs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNTQzZTg4Yi01OTA2LTQ2YmQtOGJjZi1kNWY5OTM4MzQzYTMiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzM5Mjc0NTk5LCJleHAiOjE3MzkzNjA5OTl9.kLQbRmoPWNreQ7HLVkNAa2pRUtn-7dkg-IEVmeF--fI
 
 ### ACTIVATE USER ACCOUNT
 POST http://localhost:3000/api/user/activate
 Content-Type: application/json
 
 {
-    "email": "earljoe06@gmail.com",
+    "email": "morine@gmail.com",
     "activationCode": "2566"
 }
 
@@ -35,17 +35,17 @@ POST http://localhost:3000/api/user/reset-password
 Content-Type: application/json
 
 {
-    "email": "phoebemarble@gmail.com",
-    "newPassword": "password123"
+    "email": "morine@gmail.com",
+    "newPassword": "morine"
 }
 
 ### UPDATE USER PROFILE
 PUT http://localhost:3000/api/user/update
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzY2FlNDg3NC0yYmMyLTQ3YWQtOGE3Zi1kMGQyMmVlMjg5NzUiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE5MTM0MTkxLCJleHAiOjE3MTkyMjA1OTF9.283DCItx2QnEQu93BVUzuUlNT5rWDhYjnsP-GThFTNg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNTQzZTg4Yi01OTA2LTQ2YmQtOGJjZi1kNWY5OTM4MzQzYTMiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzM5Mjc0NTk5LCJleHAiOjE3MzkzNjA5OTl9.kLQbRmoPWNreQ7HLVkNAa2pRUtn-7dkg-IEVmeF--fI
 
 {
-    "name": "Angela Kolwa",
-    "email": "phoebemarble@gmail.com",
-    "password": "password"
+    "name": "morine",
+    "email": "morine@gmail.com",
+    "password": "morine"
 }
