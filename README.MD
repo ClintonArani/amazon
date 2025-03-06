@@ -35,9 +35,21 @@ This Ecommerce application provides a platform for users to browse, add products
 
 ## **Installation Instructions**
 
-### **Backend**
 
 1. Clone the repository:
    ```bash
    git clone <repository-url>
    cd <project-directory>
+   code .
+
+2. change directory to backend
+   ```bash
+   cd backend
+   npm install
+   npm start 
+
+3. change directory to frontend
+   ```bash
+   cd frontend
+   npm install
+   ng serve -o
