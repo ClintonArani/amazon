@@ -1,0 +1,3 @@
+### CHECKOUT
+POST http://localhost:3900/checkout/724656b3-09c6-4801-b7f2-e4eb3569192e
+Content-Type: application/json

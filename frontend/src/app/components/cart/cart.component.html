@@ -1,0 +1,27 @@
+<app-header/>
+<div class="container mt-5">
+  <h2>Shopping Cart</h2>
+
+  <div *ngIf="cartProducts.length === 0">
+    <p>Your cart is empty!</p>
+  </div>
+
+  <div *ngFor="let product of cartProducts" class="row mb-4">
+    <div class="col-md-3">
+      <img [src]="product.image_path" class="img-fluid" alt="{{ product.name }}">
+    </div>
+    <div class="col-md-6">
+      <h4>{{ product.name }}</h4>
+      <p>Category: {{ product.category_name }}</p>
+      <p>Price: ${{ product.price }} (x{{ product.quantity }})</p>
+    </div>
+    <div class="col-md-3 text-center">
+      <button (click)="removeProductFromCart(product.id)" class="btn btn-danger">Remove</button>
+    </div>
+  </div>
+
+  <div *ngIf="cartProducts.length > 0">
+    <h3>Total: ${{ totalAmount }}</h3>
+    <button (click)="checkout()" class="btn btn-success">Checkout</button>
+  </div>
+</div>

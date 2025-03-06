@@ -1,0 +1,15 @@
+### CANCEL ORDER
+POST http://localhost:3900/orders/cancel/A1689BFB-320D-48A7-AF71-639B68949170
+Content-Type: application/json
+
+### UPDATE ORDER STATUS
+PUT http://localhost:3900/orders/update-status/A1689BFB-320D-48A7-AF71-639B68949170
+Content-Type: application/json
+
+{
+    "new_status": "shipped"
+}
+
+### GET ALL ORDERS
+GET http://localhost:3900/orders/all
+Content-Type: application/json

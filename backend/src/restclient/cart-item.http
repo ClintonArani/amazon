@@ -1,0 +1,17 @@
+### ADD ITEM TO CART
+POST http://localhost:3900/cart-items/add
+Content-Type: application/json
+
+{
+    "user_id": "724656b3-09c6-4801-b7f2-e4eb3569192e",
+    "product_id": "e3248812-b5a7-42c7-96b5-ebe5faf17a68",
+    "quantity": 2
+}
+
+### REMOVE ITEM FROM CART
+DELETE http://localhost:3900/cart-items/remove/6cb43afa-5388-451c-a32b-119272bc7a00
+Content-Type: application/json
+
+### GET CART ITEMS FOR A USER
+GET http://localhost:3900/cart-items/items/724656b3-09c6-4801-b7f2-e4eb3569192e
+Content-Type: application/json

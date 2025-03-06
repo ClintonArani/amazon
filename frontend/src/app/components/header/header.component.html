@@ -1,0 +1,80 @@
+<div class="main sticky-top">
+  <!-- Upper Section -->
+  <div class="upper bg-dark py-2">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex gap-3">
+          <div class="d-flex align-items-center gap-2 text-white">
+            <i class="fas fa-phone text-danger"></i>
+            <p class="mb-0">254791736576</p>
+          </div>
+          <div class="d-flex align-items-center gap-2 text-white">
+            <i class="fas fa-envelope text-danger"></i>
+            <p class="mb-0">clintonarani&#64;gmail.com</p>
+          </div>
+          <div class="d-flex align-items-center gap-2 text-white">
+            <i class="fas fa-map-marker-alt text-danger"></i>
+            <p class="mb-0">Chuka</p>
+          </div>
+        </div>
+        <div routerLink="/login" class="d-flex align-items-center gap-2 text-white">
+          <i class="fas fa-user text-danger"></i>
+          <p class="mb-0">My Account</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Middle Section -->
+  <div class="middle bg-black py-3 border-bottom border-danger">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <!-- Logo -->
+        <div class="d-flex align-items-center gap-2">
+          <h1 class="text-white mb-0">electro</h1>
+          <i class="fas fa-circle text-danger"></i>
+        </div>
+
+        <!-- Search Box -->
+        <div class="d-flex align-items-center gap-2 w-50">
+          <select class="form-select w-25 rounded-start">
+            <option value="" disabled selected>Select Category</option>
+            <option value="option1">Category 1</option>
+          </select>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search here">
+            <button class="btn btn-danger rounded-end">Search</button>
+          </div>
+        </div>
+
+        <!-- Cart -->
+        <div class="d-flex flex-column align-items-center text-white position-relative">
+          <i routerLink="/cart" class="fas fa-shopping-cart fs-4"></i>
+          <p class="mb-0">Your Cart</p>
+          <span class="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-pill">
+            {{ cartItemCount }}
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Section (Navigation) -->
+  <div class="bottom bg-white shadow-sm py-3">
+    <div class="container">
+      <ul class="nav gap-3">
+        <li class="nav-item" *ngFor="let item of navItems">
+          <a
+            class="nav-link fw-bold"
+            [ngClass]="{ 'active text-danger': item.active }"
+          
+            [routerLink]="item.route"
+          >
+            {{ item.name }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

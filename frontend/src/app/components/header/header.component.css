@@ -1,0 +1,29 @@
+/* Custom CSS for minor adjustments */
+.main {
+    z-index: 1000; /* Ensure the header stays on top */
+  }
+  
+  .upper {
+    font-size: 0.9rem; /* Adjust font size for upper section */
+  }
+  
+  .middle {
+    border-bottom: 3px solid #d10024; /* Add border to middle section */
+  }
+  
+  .cart .badge {
+    font-size: 0.75rem; /* Adjust badge size */
+  }
+  
+  .bottom .nav-link {
+    padding: 0.5rem 1rem; /* Adjust padding for nav links */
+  }
+  
+  .bottom .nav-link.active {
+    color: #d10024 !important; /* Ensure active link color */
+    text-decoration: underline; /* Add underline for active link */
+  }
+  
+  .bottom .nav-link:hover {
+    color: #d10024 !important; /* Change color on hover */
+  }

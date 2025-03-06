@@ -1,0 +1,76 @@
+### ADD PRODUCT WITH IMAGE UPLOAD
+POST http://localhost:3900/products/add
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="name"
+
+Smartphone Pro
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="description"
+
+A high-end smartphone with 128GB storage.
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="price"
+
+799.99
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="stock_quantity"
+
+50
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="category_id"
+
+23d07bff-5335-4bf5-a6dd-0cbfc1a79dc4
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="smartphone-pro.jpg"
+Content-Type: image/jpeg
+
+< ./path/to/your/image.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+
+### GET ALL PRODUCTS
+GET http://localhost:3900/products/all
+Content-Type: application/json
+
+
+### GET SINGLE PRODUCT
+GET http://localhost:3900/products/805f89c7-557c-48b8-9dc8-4e6ca24be1a1
+Content-Type: application/json
+
+
+### UPDATE PRODUCT WITH IMAGE UPLOAD
+PUT http://localhost:3900/products/update/e1f53b35-b7aa-4bb1-aeaf-d1e25d1cc32c
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="name"
+
+Samsang Pro
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="description"
+
+A high-end samsang pro with 128GB storage.
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="price"
+
+799.99
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="stock_quantity"
+
+50
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="category_id"
+
+23d07bff-5335-4bf5-a6dd-0cbfc1a79dc4
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="photo.jpg"
+Content-Type: image/jpeg
+
+< ./path/to/your/image.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### DELETE PRODUCT
+DELETE http://localhost:3900/products/delete/cb5bd29d-25a3-4cc5-9fbb-05f2e5d31b9d
+Content-Type: application/json
