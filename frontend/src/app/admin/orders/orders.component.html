@@ -1,0 +1,214 @@
+<!-- order-management.component.html -->
+<div class="container-fluid">
+    <h1 class="mt-4 mb-4">Order Management</h1>
+    
+    <!-- Filters Section -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Filters</h6>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="filterForm">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="status">Status</label>
+                <select class="form-control" id="status" formControlName="status">
+                  <option *ngFor="let status of statuses" [value]="status">{{status}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="dateFrom">From Date</label>
+                <input type="date" class="form-control" id="dateFrom" formControlName="dateFrom">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="dateTo">To Date</label>
+                <input type="date" class="form-control" id="dateTo" formControlName="dateTo">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="search">Search</label>
+                <input type="text" class="form-control" id="search" placeholder="Order ID, Customer, Email" formControlName="search">
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-12 text-right">
+              <button type="button" class="btn btn-secondary mr-2" (click)="resetFilters()">
+                <i class="fas fa-sync-alt"></i> Reset
+              </button>
+              <button type="button" class="btn btn-primary" (click)="applyFilters()">
+                <i class="fas fa-filter"></i> Apply Filters
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  
+    <!-- Orders Table -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">Orders</h6>
+        <span>Showing {{(currentPage - 1) * itemsPerPage + 1}} - {{displayRangeEnd}} of {{filteredOrders.length}} orders</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of paginatedOrders">
+                <td>{{order.id}}</td>
+                <td>{{order.customer}}<br><small>{{order.email}}</small></td>
+                <td>{{order.date | date:'mediumDate'}}</td>
+                <td>${{order.amount | number:'1.2-2'}}</td>
+                <td>
+                  <span [ngClass]="{
+                    'badge badge-secondary': order.status === 'Pending',
+                    'badge badge-warning': order.status === 'Processing',
+                    'badge badge-primary': order.status === 'Shipped',
+                    'badge badge-success': order.status === 'Delivered',
+                    'badge badge-danger': order.status === 'Cancelled',
+                    'badge badge-info': order.status === 'Refunded'
+                  }">
+                    {{order.status}}
+                  </span>
+                </td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-info mr-2" (click)="viewOrderDetails(order)">
+                      <i class="fas fa-eye"></i> View
+                    </button>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="statusDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Update Status
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="statusDropdown">
+                        <a class="dropdown-item" (click)="updateOrderStatus(order, 'Pending')">Pending</a>
+                        <a class="dropdown-item" (click)="updateOrderStatus(order, 'Processing')">Processing</a>
+                        <a class="dropdown-item" (click)="updateOrderStatus(order, 'Shipped')">Shipped</a>
+                        <a class="dropdown-item" (click)="updateOrderStatus(order, 'Delivered')">Delivered</a>
+                        <a class="dropdown-item" (click)="updateOrderStatus(order, 'Cancelled')">Cancelled</a>
+                        <a class="dropdown-item" (click)="updateOrderStatus(order, 'Refunded')">Refunded</a>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="filteredOrders.length === 0">
+                <td colspan="6" class="text-center">No orders found matching your criteria</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+  
+        <!-- Pagination -->
+        <div class="row mt-3" *ngIf="filteredOrders.length > 0">
+          <div class="col-md-12">
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <a class="page-link" (click)="changePage(currentPage - 1)" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li class="page-item" *ngFor="let page of pageNumbers" [class.active]="page === currentPage">
+                  <a class="page-link" (click)="changePage(page)">{{page}}</a>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <a class="page-link" (click)="changePage(currentPage + 1)" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Order Details Modal -->
+  <div class="modal fade" id="orderDetailsModal" tabindex="-1" role="dialog" aria-labelledby="orderDetailsModalLabel" aria-hidden="true" *ngIf="selectedOrder">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="orderDetailsModalLabel">Order Details - {{selectedOrder.id}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeOrderDetails()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h6>Customer Information</h6>
+              <p><strong>Name:</strong> {{selectedOrder.customer}}</p>
+              <p><strong>Email:</strong> {{selectedOrder.email}}</p>
+            </div>
+            <div class="col-md-6">
+              <h6>Order Information</h6>
+              <p><strong>Date:</strong> {{selectedOrder.date | date:'mediumDate'}}</p>
+              <p><strong>Status:</strong> 
+                <span [ngClass]="{
+                  'badge badge-secondary': selectedOrder.status === 'Pending',
+                  'badge badge-warning': selectedOrder.status === 'Processing',
+                  'badge badge-primary': selectedOrder.status === 'Shipped',
+                  'badge badge-success': selectedOrder.status === 'Delivered',
+                  'badge badge-danger': selectedOrder.status === 'Cancelled',
+                  'badge badge-info': selectedOrder.status === 'Refunded'
+                }">
+                  {{selectedOrder.status}}
+                </span>
+              </p>
+              <p><strong>Total Amount:</strong> ${{selectedOrder.amount | number:'1.2-2'}}</p>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col-md-12">
+              <h6>Order Items</h6>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of selectedOrder.items">
+                    <td>{{item.name}}</td>
+                    <td>${{item.price | number:'1.2-2'}}</td>
+                    <td>{{item.quantity}}</td>
+                    <td>${{(item.price * item.quantity) | number:'1.2-2'}}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                    <td><strong>${{selectedOrder.amount | number:'1.2-2'}}</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeOrderDetails()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -3,12 +3,12 @@
 <div class="container mt-4">
   <!-- Categories Section -->
   <div class="row">
-    <div *ngFor="let item of categories" class="col-md-4 col-sm-6 mb-3">
+    <div *ngFor="let item of items" class="col-md-4 col-sm-6 mb-3">
       <div class="card position-relative overflow-hidden">
         <img [src]="item.image" class="card-img-top" alt="{{ item.title }}">
         <div class="overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-start p-3">
           <h4 class="text-white fw-bold">{{ item.title }}</h4>
-          <a routerLink="/category/{{ item.id }}" class="text-white fw-bold">SHOP NOW ➝</a>
+          <!-- <a routerLink="/category/{{ item.id }}" class="text-white fw-bold">SHOP NOW ➝</a> -->
         </div>
       </div>
     </div>
@@ -23,10 +23,10 @@
         <div class="product-card" [routerLink]="['/product-details', product.id]" style="cursor: pointer;">
           <img [src]="product.image_path" class="product-img" alt="{{ product.name }}">
           <div class="product-info">
-            <p class="category">{{ product.category_name }}</p>
+            <p class="category">{{ product.category_id}}</p>
             <h5>{{ product.name }}</h5>
             <p class="price">
-              ${{ product.price }}
+              {{ product.price | currency :'Ksh' }}
               <span class="old-price" *ngIf="product.oldPrice">${{ product.oldPrice }}</span>
             </p>
           </div>

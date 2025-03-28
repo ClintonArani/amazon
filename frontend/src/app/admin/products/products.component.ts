@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
 import { CommonModule } from '@angular/common';
+import { CategoriesService } from '../../services/categories.service';
 
 @Component({
   selector: 'app-products',
@@ -29,7 +30,8 @@ export class ProductsComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private productService: ProductService
+    private productService: ProductService,
+    private categoriesService: CategoriesService 
   ) {}
 
   ngOnInit(): void {
@@ -65,7 +67,7 @@ export class ProductsComponent implements OnInit {
   }
 
   loadCategories(): void {
-    this.productService.getAllCategories().subscribe(
+    this.categoriesService.getAllCategories().subscribe(
       (response) => {
         this.categories = response.categories;
       },

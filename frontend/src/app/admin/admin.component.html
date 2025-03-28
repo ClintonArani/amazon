@@ -18,6 +18,9 @@
         <li routerLink="/admin/manage-product" [class.active]="activeTab === 'reportsAnalytics'" (click)="setActiveTab('reportsAnalytics')">
           <i class="fas fa-chart-line"></i> Products
         </li>
+        <li routerLink="/admin/orders" [class.active]="activeTab === 'orders'" (click)="setActiveTab('orders')">
+          <i class="fas fa-clipboard-list"></i> Orders
+        </li>
         <li (click)="onLogout()">
           <i class="fas fa-sign-out-alt"></i> Logout
         </li>

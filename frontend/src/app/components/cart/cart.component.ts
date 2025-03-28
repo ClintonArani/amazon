@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { CartService } from '../../services/cart-service.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { OrderService } from '../../services/order.service';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "../header/header.component";
+import { Subscription } from 'rxjs';
+import { CartService } from '../../services/cart-service.service';
 
 @Component({
   selector: 'app-cart',
@@ -11,10 +12,17 @@ import { HeaderComponent } from "../header/header.component";
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css']
 })
-export class CartComponent implements OnInit {
-  cartProducts: any[] = [];
+export class CartComponent implements OnInit, OnDestroy {
+  cartItems: any[] = [];
   totalAmount: number = 0;
-  userId = '724656b3-09c6-4801-b7f2-e4eb3569192e'; // Replace with actual logged-in user ID
+  isLoading = true;
+  errorMessage: string = '';
+  private subscriptions = new Subscription();
+  
+  // Confirmation dialog states
+  showRemoveConfirmation = false;
+  showCheckoutConfirmation = false;
+  itemToRemove: string | null = null;
 
   constructor(
     private cartService: CartService,
@@ -23,51 +31,164 @@ export class CartComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCartItems();
+    this.setupCartUpdates();
   }
 
-  // Fetch cart items for the user
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
+  private setupCartUpdates(): void {
+    this.subscriptions.add(
+      this.cartService.cartCount$.subscribe(() => {
+        this.loadCartItems();
+      })
+    );
+  }
+
   loadCartItems(): void {
-    this.cartService.getCartItems(this.userId).subscribe(
-      (response) => {
-        this.cartProducts = response.items; // Assuming the API returns { items: [] }
-        this.calculateTotal();
-      },
-      (error) => {
-        console.error('Error fetching cart items:', error);
-      }
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.subscriptions.add(
+      this.cartService.getCartItems().subscribe({
+        next: (response) => {
+          this.cartItems = response.cartItems || [];
+          this.cartItems = this.cartItems.map(item => ({
+            ...item,
+            image_path: `http://localhost:3900/${item.image_path}`,
+            quantity: Math.max(1, Math.min(10, item.quantity)) // Clamp between 1-10
+          }));
+          this.calculateTotal();
+          this.isLoading = false;
+        },
+        error: (err) => this.handleCartError(err)
+      })
     );
   }
 
-  // Remove product from cart
-  removeProductFromCart(cartItemId: string): void {
-    this.cartService.removeProductFromCart(cartItemId).subscribe(
-      () => {
-        this.cartProducts = this.cartProducts.filter((item) => item.id !== cartItemId);
-        this.calculateTotal();
-      },
-      (error) => {
-        console.error('Error removing item from cart:', error);
-      }
+  openRemoveConfirmation(cartItemId: string): void {
+    this.itemToRemove = cartItemId;
+    this.showRemoveConfirmation = true;
+  }
+
+  closeRemoveConfirmation(): void {
+    this.itemToRemove = null;
+    this.showRemoveConfirmation = false;
+  }
+
+  confirmRemoveItem(): void {
+    if (!this.itemToRemove) return;
+    
+    this.isLoading = true;
+    this.showRemoveConfirmation = false;
+    
+    this.subscriptions.add(
+      this.cartService.removeFromCart(this.itemToRemove).subscribe({
+        next: () => {
+          this.cartItems = this.cartItems.filter(item => item.id !== this.itemToRemove);
+          this.calculateTotal();
+          this.isLoading = false;
+          setTimeout(() => window.location.reload(), 1000);
+        },
+        error: (err) => {
+          this.handleCartError(err);
+          this.loadCartItems();
+        }
+      })
     );
   }
 
-  // Perform checkout
-  checkout(): void {
-    this.orderService.checkout(this.userId).subscribe(
-      () => {
-        this.cartService.clearCart(); // Clear local cart
-        this.cartProducts = [];
-        this.totalAmount = 0;
-        alert('Checkout successful!');
-      },
-      (error) => {
-        console.error('Error during checkout:', error);
-      }
+  openCheckoutConfirmation(): void {
+    if (this.cartItems.length === 0) {
+      this.showError('Your cart is empty');
+      return;
+    }
+    this.showCheckoutConfirmation = true;
+  }
+
+  closeCheckoutConfirmation(): void {
+    this.showCheckoutConfirmation = false;
+  }
+
+  confirmCheckout(): void {
+    this.showCheckoutConfirmation = false;
+    this.isLoading = true;
+    const userId = this.cartService.getCurrentUserId();
+    
+    this.subscriptions.add(
+      this.orderService.checkout(userId).subscribe({
+        next: () => {
+          this.handleSuccessfulCheckout();
+          setTimeout(() => window.location.reload(), 1000);
+        },
+        error: (err) => this.handleCheckoutError(err)
+      })
     );
   }
 
-  // Calculate total amount of all products in the cart
-  calculateTotal(): void {
-    this.totalAmount = this.cartProducts.reduce((sum, product) => sum + (product.price * product.quantity), 0);
+  updateQuantity(item: any, change: number): void {
+    const newQuantity = Math.max(1, Math.min(10, item.quantity + change));
+    if (newQuantity === item.quantity) return;
+
+    item.quantity = newQuantity;
+    this.calculateTotal();
+
+    this.subscriptions.add(
+      this.cartService.addToCart(item.product_id, newQuantity).subscribe({
+        error: (err) => {
+          item.quantity -= change;
+          this.calculateTotal();
+          this.errorMessage = 'Failed to update quantity';
+          console.error('Quantity update error:', err);
+        }
+      })
+    );
+  }
+
+  private handleSuccessfulCheckout(): void {
+    this.subscriptions.add(
+      this.cartService.clearCart().subscribe({
+        next: () => {
+          this.cartItems = [];
+          this.totalAmount = 0;
+          this.isLoading = false;
+          alert('Order placed successfully!');
+        },
+        error: (err) => {
+          console.error('Error clearing cart:', err);
+          this.isLoading = false;
+        }
+      })
+    );
+  }
+
+  private handleCheckoutError(err: any): void {
+    console.error('Checkout error:', err);
+    this.showError(err.message || 'Checkout failed');
+    this.isLoading = false;
+  }
+
+  private handleCartError(err: any): void {
+    console.error('Cart error:', err);
+    this.showError(err.message || 'Failed to load cart items');
+    this.isLoading = false;
+
+    if (err.message.includes('authenticated') || err.message.includes('token')) {
+      this.cartItems = [];
+      this.totalAmount = 0;
+    }
+  }
+
+  private showError(message: string): void {
+    this.errorMessage = message;
+    setTimeout(() => this.errorMessage = '', 3000);
+  }
+
+  private calculateTotal(): void {
+    this.totalAmount = this.cartItems.reduce(
+      (sum, item) => sum + (item.price * item.quantity),
+      0
+    );
   }
 }

@@ -1,1 +1,6 @@
-CREATE database event_management
+CREATE database morine
+
+
+select  * from users
+
+use morine

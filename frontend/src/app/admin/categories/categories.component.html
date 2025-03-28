@@ -33,8 +33,8 @@
           <td>{{ category.name }}</td>
           <td>{{ category.description }}</td>
           <td>
-            <button class="btn btn-sm btn-warning mr-2" (click)="openEditCategoryModal(category)">Edit</button>
-            <button class="btn btn-sm btn-danger" (click)="confirmDeleteCategory(category)">Delete</button>
+            <i class="fas fa-edit text-primary" (click)="openEditCategoryModal(category)"></i>
+            <i class="fas fa-trash-alt text-danger" (click)="confirmDeleteCategory(category)"></i>
           </td>
         </tr>
       </tbody>

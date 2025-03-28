@@ -1,10 +1,11 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { HeaderComponent } from "../header/header.component";
 import { CartService } from '../../services/cart-service.service';
+
 
 @Component({
   selector: 'app-product-details',
@@ -15,49 +16,65 @@ import { CartService } from '../../services/cart-service.service';
 })
 export class ProductDetailsComponent implements OnInit {
   productId: string | null = null;
-  product: any = null; // Product details fetched from the backend
-  quantity: number = 1; // Default quantity to 1
+  product: any = null;
+  quantity: number = 1;
   cartMessage: string = '';
+  isLoading: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
-    private cartService: CartService,
-    private productService: ProductService
+    private productService: ProductService,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
-    // Retrieve the product ID from route params
     this.productId = this.route.snapshot.paramMap.get('id');
-  
-    // Fetch the product details from the backend
     if (this.productId) {
-      this.productService.getProductById(this.productId).subscribe(
-        (response) => {
-          this.product = response.product; // Assuming the API returns { product: {} }
-          this.product.image_path = `http://localhost:3900/${this.product.image_path}`; // Construct full URL
-        },
-        (error) => {
-          console.error('Error fetching product details:', error);
-        }
-      );
+      this.loadProductDetails(this.productId);
     }
   }
 
-// In product-details.component.ts
-addToCart(): void {
-  if (this.product) {
-    const userId = '724656b3-09c6-4801-b7f2-e4eb3569192e'; // Replace with actual logged-in user ID
-    this.cartService.addProductToCart(userId, this.product.id, this.quantity).subscribe(
-      () => {
-        this.cartMessage = `${this.quantity} of ${this.product.name} added to cart!`;
-        setTimeout(() => {
-          this.cartMessage = ''; // Clear the cart message after 3 seconds
-        }, 3000);
+  loadProductDetails(productId: string): void {
+    this.isLoading = true;
+    this.productService.getProductById(productId).subscribe({
+      next: (response) => {
+        this.product = response.product;
+        this.product.image_path = `http://localhost:3900/${this.product.image_path}`;
+        this.isLoading = false;
       },
-      (error) => {
-        console.error('Error adding product to cart:', error);
+      error: (error) => {
+        console.error('Error loading product:', error);
+        this.isLoading = false;
       }
-    );
+    });
   }
+
+
+addToCart(): void {
+  if (!this.product) return;
+
+  this.isLoading = true;
+  this.cartMessage = '';
+
+  this.cartService.addToCart(this.product.id, this.quantity).subscribe({
+    next: () => {
+      this.cartMessage = `${this.quantity} × ${this.product?.name} added to cart!`;
+      this.isLoading = false;
+      setTimeout(() => this.cartMessage = '', 3000);
+    },
+    error: (error) => {
+      this.cartMessage = error.message || 'Failed to add to cart';
+      this.isLoading = false;
+      setTimeout(() => this.cartMessage = '', 3000);
+    }
+  });
 }
+
+  incrementQuantity(): void {
+    if (this.quantity < 10) this.quantity++;
+  }
+
+  decrementQuantity(): void {
+    if (this.quantity > 1) this.quantity--;
+  }
 }
