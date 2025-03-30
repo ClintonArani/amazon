@@ -1,53 +1,54 @@
-.card {
-  border-radius: 0.35rem;
-  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-}
-
-.chart-area {
-  position: relative;
-  height: 20rem;
-  width: 100%;
-}
-
-.chart-bar {
-  position: relative;
-  height: 20rem;
-  width: 100%;
-}
-
-.chart-pie {
-  position: relative;
-  height: 15rem;
-  width: 100%;
-}
-
-.badge {
-  padding: 0.35em 0.65em;
-  font-size: 0.75em;
-  font-weight: 700;
-  line-height: 1;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: baseline;
-  border-radius: 0.25rem;
-}
-
-.badge-warning {
-  background-color: #f6c23e;
-  color: #fff;
-}
-
-.badge-primary {
-  background-color: #4e73df;
-  color: #fff;
-}
-
-.badge-success {
-  background-color: #1cc88a;
-  color: #fff;
-}
-
-.dropdown-menu {
-  min-width: 7rem;
-}
-
+:host {
+    display: block;
+  }
+  
+  .chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+  }
+  
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  /* Loading spinner styles */
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  /* Card styles for better consistency */
+  .card {
+    border-radius: 0.35rem;
+  }
+  
+  .card-body {
+    padding: 1.25rem;
+  }
+  
+  /* Table styles */
+  .table-responsive {
+    overflow-x: auto;
+  }
+  
+  .table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+  }
+  
+  /* Alert styles */
+  .alert {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+  }
+  
+  .alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  }

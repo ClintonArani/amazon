@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-admin',
@@ -10,21 +11,41 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
 })
-export class AdminComponent {
+export class AdminComponent implements OnInit {
   activeTab: string = 'overview';
   isSidebarVisible: boolean = false;
   isDarkMode: boolean = false;
   isProfileDropdownVisible: boolean = false;
   notificationsCount: number = 3;
   isLoading: boolean = false;
+  userFullName!: string;
+  userEmail: string = '';
+  userAvatar: string = 'assets/image2.png'; // Default avatar
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UserService
+  ) {}
+
+  ngOnInit() {
+    this.simulateLoading();
+    this.simulateRealTimeNotifications();
+    this.loadUserFromToken();
+  }
+
+  loadUserFromToken() {
+    const userData = this.userService.getCurrentUserFromToken();
+    if (userData) {
+      this.userFullName = `${userData.firstName} ${userData.lastName}`.trim();
+      
+      // You can add more fields as needed
+    }
+  }
 
   onLogout() {
     this.authService.logout().subscribe({
       next: (response) => {
-        console.log(response.message); // "Logged out successfully"
-        // No need to navigate here; it's already handled in the AuthService
+        console.log(response.message);
       },
       error: (err) => {
         console.error('Logout failed:', err);
@@ -66,7 +87,6 @@ export class AdminComponent {
     alert(`You have ${this.notificationsCount} new notifications.`);
   }
 
-  // Simulate loading state
   simulateLoading() {
     this.isLoading = true;
     setTimeout(() => {
@@ -74,16 +94,10 @@ export class AdminComponent {
     }, 2000);
   }
 
-  // Simulate real-time notifications
   simulateRealTimeNotifications() {
     setInterval(() => {
       this.notificationsCount = Math.floor(Math.random() * 10);
     }, 5000);
-  }
-
-  ngOnInit() {
-    this.simulateLoading();
-    this.simulateRealTimeNotifications();
   }
 
   @HostListener('window:resize', ['$event'])

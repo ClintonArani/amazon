@@ -14,7 +14,6 @@ import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { CategoriesComponent } from './admin/categories/categories.component';
 import { ProductsComponent } from './admin/products/products.component';
 import { UsersComponent } from './admin/users/users.component';
-import { OrdersComponent } from './admin/orders/orders.component';
 
 export const routes: Routes = [
     { path: 'home', component: HomeComponent },
@@ -40,7 +39,6 @@ export const routes: Routes = [
             { path: 'manage-product-categories', component: CategoriesComponent},
             { path: 'manage-product', component: ProductsComponent},
             { path: 'manage-users', component: UsersComponent},
-            { path: 'orders', component: OrdersComponent}
         ]
     },
     { path: '**', redirectTo: '/login' } , 

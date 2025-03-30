@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -28,5 +28,16 @@ export class OrderService {
   // Checkout (create an order)
   checkout(userId: string): Observable<any> {
     return this.http.post(`http://localhost:3900/checkout/${userId}`, {});
+  }
+  getRecentOrders(limit: number = 5): Observable<any> {
+    return this.http.get(`${this.apiUrl}/recent?limit=${limit}`).pipe(
+      catchError(error => {
+        console.error('Error fetching recent orders:', error);
+        throw error;
+      })
+    );
+  }
+  getTopProducts(limit: number = 5): Observable<any> {
+    return this.http.get(`${this.apiUrl}/top-products?limit=${limit}`);
   }
 }

@@ -18,9 +18,6 @@
         <li routerLink="/admin/manage-product" [class.active]="activeTab === 'reportsAnalytics'" (click)="setActiveTab('reportsAnalytics')">
           <i class="fas fa-chart-line"></i> Products
         </li>
-        <li routerLink="/admin/orders" [class.active]="activeTab === 'orders'" (click)="setActiveTab('orders')">
-          <i class="fas fa-clipboard-list"></i> Orders
-        </li>
         <li (click)="onLogout()">
           <i class="fas fa-sign-out-alt"></i> Logout
         </li>
@@ -30,7 +27,8 @@
     <!-- Main Content -->
     <div class="main-content" [class.dark-mode]="isDarkMode" (click)="hideSidebarOnOutsideClick()">
       <!-- Navbar -->
-      <nav class="navbar">
+      <nav class="navbar d-flex">
+        <h2>Welcome Admin!</h2>
         <div class="navbar-left">
           <div class="menu-icon" (click)="toggleSidebar($event)" tabindex="0" aria-label="Toggle Sidebar">
             <i class="fas fa-bars"></i>
@@ -41,16 +39,9 @@
           </div>
         </div>
         <div class="navbar-right">
-          <div class="theme-toggle" (click)="toggleTheme()">
-            <i [class]="isDarkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
-          </div>
-          <div class="notification-icon" (click)="showNotifications()">
-            <i class="fas fa-bell"></i>
-            <span class="badge">{{ notificationsCount }}</span>
-          </div>
           <div class="profile" (click)="toggleProfileDropdown()">
-            <img src="assets/image2.png" alt="Admin Profile" />
-            <span>Admin</span>
+            <img src="assets/image2.png" />
+            <span>{{userFullName}}</span>
             <div class="dropdown" [class.show]="isProfileDropdownVisible">
               <a href="#">Settings</a>
               <a href="#">Help</a>

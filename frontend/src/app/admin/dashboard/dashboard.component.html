@@ -1,9 +1,17 @@
-<!-- admin-dashboard.component.html -->
 <div class="container-fluid">
-    <h1 class="mt-4 mb-4">Admin Dashboard</h1>
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <p class="mt-2">Loading dashboard data...</p>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!isLoading">
     
     <!-- Summary Cards -->
-    <div class="row">
+    <div class="row mt-3">
       <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
           <div class="card-body">
@@ -68,55 +76,76 @@
         </div>
       </div>
     </div>
-  
+
     <!-- Charts Row -->
-    <div class="row">
-      <div class="col-xl-8 col-lg-7">
+    <div class="row mb-4">
+      <!-- Order Status Chart -->
+      <div class="col-xl-6 col-lg-6">
         <div class="card shadow mb-4">
-          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Sales Overview</h6>
+          <div class="card-header py-3 bg-white border-0">
+            <h6 class="m-0 font-weight-bold text-primary">Order Status Distribution</h6>
           </div>
           <div class="card-body">
-            <div class="chart-area">
-              <canvas id="salesChart"></canvas>
+            <div class="chart-container">
+              <canvas #orderStatusChart></canvas>
             </div>
           </div>
         </div>
       </div>
-  
-      <div class="col-xl-4 col-lg-5">
+
+      <!-- Monthly Sales Chart -->
+      <div class="col-xl-6 col-lg-6">
         <div class="card shadow mb-4">
-          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
+          <div class="card-header py-3 bg-white border-0">
+            <h6 class="m-0 font-weight-bold text-primary">Monthly Sales</h6>
           </div>
           <div class="card-body">
-            <div class="chart-pie pt-4 pb-2">
-              <canvas id="revenueChart"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  
-    <!-- User Activity Chart -->
-    <div class="row">
-      <div class="col-lg-12 mb-4">
-        <div class="card shadow mb-4">
-          <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Weekly User Activity</h6>
-          </div>
-          <div class="card-body">
-            <div class="chart-bar">
-              <canvas id="userActivityChart"></canvas>
+            <div class="chart-container">
+              <canvas #monthlySalesChart></canvas>
             </div>
           </div>
         </div>
       </div>
     </div>
-  
+
+    <!-- Second Charts Row -->
+    <div class="row mb-4">
+      <!-- User Activity Chart -->
+      <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+          <div class="card-header py-3 bg-white border-0">
+            <h6 class="m-0 font-weight-bold text-primary">User Activity</h6>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas #userActivityChart></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Products Chart -->
+      <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+          <div class="card-header py-3 bg-white border-0">
+            <h6 class="m-0 font-weight-bold text-primary">Top Products by Revenue</h6>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas #topProductsChart></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="successMessage" class="alert alert-success mt-2">
+      {{successMessage}}
+    </div>
+
     <!-- Recent Orders Table -->
     <div class="card shadow mb-4">
-      <div class="card-header py-3">
+      <div class="card-header py-3 bg-white border-0">
         <h6 class="m-0 font-weight-bold text-primary">Recent Orders</h6>
       </div>
       <div class="card-body">
@@ -133,31 +162,34 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let order of recentOrders">
-                <td>{{order.id}}</td>
+              <tr *ngFor="let order of recentOrders; let i = index;">
+                <td>{{i + 1}}</td>
                 <td>{{order.customer}}</td>
                 <td>{{order.date}}</td>
                 <td>${{order.amount}}</td>
+               
                 <td>
                   <span [ngClass]="{
-                    'badge badge-warning': order.status === 'Processing',
+                    'badge badge-warning': order.status === 'pending',
                     'badge badge-primary': order.status === 'Shipped',
-                    'badge badge-success': order.status === 'Delivered'
+                    'badge badge-success': order.status === 'Delivered',
+                    'badge badge-danger': order.status === 'Cancelled'
                   }">
-                    {{order.status}}
+                    {{order.status | titlecase}}
                   </span>
                 </td>
+                
                 <td>
-                  <div class="dropdown">
-                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="statusDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Update Status
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="statusDropdown">
-                      <a class="dropdown-item" (click)="updateOrderStatus(order, 'Processing')">Processing</a>
-                      <a class="dropdown-item" (click)="updateOrderStatus(order, 'Shipped')">Shipped</a>
-                      <a class="dropdown-item" (click)="updateOrderStatus(order, 'Delivered')">Delivered</a>
-                      <a class="dropdown-item" (click)="updateOrderStatus(order, 'Cancelled')">Cancelled</a>
-                    </div>
+                  <div class="input-group">
+                    <select class="form-control form-control-sm custom-select" 
+                            (change)="updateStatus(order.order_id, $any($event.target).value)"
+                            [value]="order.status"><i class="fas fa-chevron-down"></i>
+                      <option [value]="order.status" selected disabled>{{order.status | titlecase}} (Current)</option>
+                      <option value="pending">Pending</option>
+                      <option value="Shipped">Shipped</option>
+                      <option value="Delivered">Delivered</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
                   </div>
                 </td>
               </tr>
@@ -169,7 +201,7 @@
   
     <!-- Top Products Table -->
     <div class="card shadow mb-4">
-      <div class="card-header py-3">
+      <div class="card-header py-3 border-0 bg-white">
         <h6 class="m-0 font-weight-bold text-primary">Top Selling Products</h6>
       </div>
       <div class="card-body">
@@ -194,3 +226,4 @@
       </div>
     </div>
   </div>
+</div>

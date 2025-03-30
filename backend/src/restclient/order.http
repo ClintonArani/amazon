@@ -1,15 +1,25 @@
 ### CANCEL ORDER
-POST http://localhost:3900/orders/cancel/A1689BFB-320D-48A7-AF71-639B68949170
+POST http://localhost:3900/orders/cancel/BD7746D6-7E7C-422B-9874-EEDFCE2150A2
 Content-Type: application/json
 
 ### UPDATE ORDER STATUS
-PUT http://localhost:3900/orders/update-status/A1689BFB-320D-48A7-AF71-639B68949170
+PUT http://localhost:3900/orders/update-status/BD7746D6-7E7C-422B-9874-EEDFCE2150A2
 Content-Type: application/json
 
 {
-    "new_status": "shipped"
+    "new_status": "pending"
 }
 
 ### GET ALL ORDERS
 GET http://localhost:3900/orders/all
 Content-Type: application/json
+
+### TOP SELLING PRODUCTS 
+GET http://localhost:3900/orders/top-products?limit=5
+
+### RECENT ORDERS
+GET http://localhost:3900/orders/recent?limit=5
+
+
+### SALES OVERVIEW 
+GET http://localhost:3900/orders/sales-overview
