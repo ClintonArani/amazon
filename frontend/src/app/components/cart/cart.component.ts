@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "../header/header.component";
 import { Subscription } from 'rxjs';
 import { CartService } from '../../services/cart-service.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule, HeaderComponent],
+  imports: [CommonModule, HeaderComponent, RouterLink],
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css']
 })
@@ -49,7 +50,7 @@ export class CartComponent implements OnInit, OnDestroy {
   loadCartItems(): void {
     this.isLoading = true;
     this.errorMessage = '';
-
+  
     this.subscriptions.add(
       this.cartService.getCartItems().subscribe({
         next: (response) => {
@@ -57,7 +58,8 @@ export class CartComponent implements OnInit, OnDestroy {
           this.cartItems = this.cartItems.map(item => ({
             ...item,
             image_path: `http://localhost:3900/${item.image_path}`,
-            quantity: Math.max(1, Math.min(10, item.quantity)) // Clamp between 1-10
+            quantity: Math.max(1, Math.min(10, item.quantity)), // Clamp between 1-10
+            category_name: item.category_name || 'Uncategorized' // Ensure category_name exists
           }));
           this.calculateTotal();
           this.isLoading = false;

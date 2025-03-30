@@ -1,12 +1,11 @@
 ### CREATE USER
-
+POST http://localhost:3900/users/create
 Content-Type: application/json
-
 {
     "firstName": "Clinton",
     "lastName": "Omari",
     "phoneNumber": "0791736577",
-    "email": "clintonarani420@gmail.com",
+    "email": "clintonarani@gmail.com",
     "password": "Clinton@123"
 }
 
@@ -27,7 +26,7 @@ Content-Type: application/json
 
 
 ### GET SINGLE USER
-GET http://localhost:3900/users/3a9d72c7-93cf-479e-8aee-f7eea3f92ed4
+GET http://localhost:3900/users/3a847581-7889-4dba-912a-2f5a691d2dfd
 Content-Type: application/json
 
 
@@ -36,12 +35,12 @@ PUT http://localhost:3900/users/switch-role
 Content-Type: application/json
 
 {
-    "user_id": "c7af0077-4390-4d8c-8c1a-7667dd4ed5e2"
+    "user_id": "3a847581-7889-4dba-912a-2f5a691d2dfd"
 }
 
 
 ### UPDATE USER
-PATCH http://localhost:3900/users/update/3a9d72c7-93cf-479e-8aee-f7eea3f92ed4
+PATCH http://localhost:3900/users/update/3a847581-7889-4dba-912a-2f5a691d2dfd
 Content-Type: application/json
 
 {

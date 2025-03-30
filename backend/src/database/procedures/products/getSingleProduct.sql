@@ -1,6 +1,15 @@
-CREATE PROCEDURE getSingleProduct
+CREATE OR ALTER PROCEDURE getSingleProduct
     @id VARCHAR(255)
 AS
 BEGIN
-    SELECT * FROM products WHERE id = @id AND isDeleted = 0;
+    SELECT 
+        p.*,
+        c.name AS category_name
+    FROM 
+        products p
+    LEFT JOIN 
+        categories c ON p.category_id = c.id
+    WHERE 
+        p.id = @id AND 
+        p.isDeleted = 0;
 END

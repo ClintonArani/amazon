@@ -7,16 +7,16 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class FilterService {
   private searchQuerySubject = new BehaviorSubject<string>('');
-  private categoryFilterSubject = new BehaviorSubject<string>('');
+  private categoryFilterSubject = new BehaviorSubject<string>('all');
 
   searchQuery$ = this.searchQuerySubject.asObservable();
   categoryFilter$ = this.categoryFilterSubject.asObservable();
 
-  setSearchQuery(query: string) {
+  setSearchQuery(query: string): void {
     this.searchQuerySubject.next(query);
   }
 
-  setCategoryFilter(categoryId: string) {
+  setCategoryFilter(categoryId: string): void {
     this.categoryFilterSubject.next(categoryId);
   }
 }

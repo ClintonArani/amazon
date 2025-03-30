@@ -120,4 +120,68 @@ export class userController {
             });
         }
     }
+
+    async initiatePasswordReset(req: Request, res: Response) {
+        try {
+            const { email } = req.body;
+            
+            if (!email) {
+                return res.status(400).json({ error: 'Email is required' });
+            }
+            
+            const result = await service.initiatePasswordReset(email);
+            
+            if (result.error) {
+                return res.status(400).json(result);
+            }
+            
+            return res.status(200).json(result);
+        } catch (error) {
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+    
+    async verifyResetCode(req: Request, res: Response) {
+        try {
+            const { email, resetCode } = req.body;
+            
+            if (!email || !resetCode) {
+                return res.status(400).json({ error: 'Email and reset code are required' });
+            }
+            
+            const result = await service.verifyResetCode(email, resetCode);
+            
+            if (result.error) {
+                return res.status(400).json(result);
+            }
+            
+            return res.status(200).json(result);
+        } catch (error) {
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+    
+    async resetPassword(req: Request, res: Response) {
+        try {
+            const { email, resetCode, newPassword } = req.body;
+            
+            if (!email || !resetCode || !newPassword) {
+                return res.status(400).json({ error: 'Email, reset code and new password are required' });
+            }
+            
+            if (newPassword.length < 6) {
+                return res.status(400).json({ error: 'Password must be at least 6 characters' });
+            }
+            
+            const result = await service.resetPassword(email, resetCode, newPassword);
+            
+            if (result.error) {
+                return res.status(400).json(result);
+            }
+            
+            return res.status(200).json(result);
+        } catch (error) {
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+    }
 }

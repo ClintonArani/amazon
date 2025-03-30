@@ -1,9 +1,8 @@
-// header.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router, NavigationEnd } from '@angular/router';
-import { CategoriesService } from '../../services/categories.service';
+import { ProductService } from '../../services/product.service'; // Changed from CategoriesService
 import { Subscription, filter } from 'rxjs';
 import { CartService } from '../../services/cart-service.service';
 import { FilterService } from '../../services/filter.service';
@@ -24,7 +23,7 @@ interface NavItem {
 export class HeaderComponent implements OnInit, OnDestroy {
   cartItemCount: number = 0;
   categories: any[] = [];
-  selectedCategory: string = 'all'; // Default to 'all' categories
+  selectedCategory: string = 'all';
   searchQuery: string = '';
   private subscriptions = new Subscription();
   
@@ -40,13 +39,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private cartService: CartService,
-    private categoriesService: CategoriesService,
+    private productService: ProductService, // Changed from CategoriesService
     private router: Router,
     private filterService: FilterService
   ) {}
 
   ngOnInit(): void {
-    this.loadCategories();
+    this.loadCategoriesFromProducts();
     this.setupRouteListener();
     this.setupCartSubscription();
     this.loadInitialCartData();
@@ -56,21 +55,42 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  private loadCategoriesFromProducts(): void {
+    this.subscriptions.add(
+      this.productService.getAllProducts().subscribe({
+        next: (response) => {
+          // Extract unique categories from products
+          const categoryMap = new Map<string, string>();
+          
+          if (response.products && response.products.length > 0) {
+            response.products.forEach((product: { category_id: string; category_name: string; }) => {
+              if (product.category_id && product.category_name) {
+                categoryMap.set(product.category_id, product.category_name);
+              }
+            });
+          }
+          
+          // Convert map to array and add 'All Categories' option
+          this.categories = [
+            { id: 'all', name: 'All Categories' },
+            ...Array.from(categoryMap, ([id, name]) => ({ id, name }))
+          ];
+          
+          this.updateNavItemsWithCategories();
+        },
+        error: (error) => console.error('Error loading products:', error)
+      })
+    );
+  }
+
   onSearch(): void {
-    if (this.selectedCategory) {
-      this.filterService.setCategoryFilter(this.selectedCategory);
-    }
-    if (this.searchQuery) {
-      this.filterService.setSearchQuery(this.searchQuery);
-    }
+    // Trigger both filters
+    this.filterService.setCategoryFilter(this.selectedCategory);
+    this.filterService.setSearchQuery(this.searchQuery.trim().toLowerCase());
     
-    // Navigate to home if not already there
     if (this.router.url !== '/home') {
       this.router.navigate(['/home']);
     }
-    
-    // Reset search (optional)
-    // this.searchQuery = '';
   }
 
   onCategoryChange(): void {
@@ -100,24 +120,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     );
   }
 
-  private loadCategories(): void {
-    this.subscriptions.add(
-      this.categoriesService.getAllCategories().subscribe({
-        next: (response) => {
-          // Add 'All Categories' option
-          this.categories = [{ id: 'all', name: 'All Categories' }, ...(response.categories || [])];
-          this.updateNavItemsWithCategories();
-        },
-        error: (error) => console.error('Error loading categories:', error)
-      })
-    );
-  }
-
   private updateNavItemsWithCategories(): void {
     const categoryNavItems = this.categories.slice(1, 5).map(category => ({
       name: category.name,
       active: false,
-      route: `/category/${category.slug || category.id}`
+      route: `/category/${category.id}` // Using id since we don't have slug
     }));
     
     this.navItems = [...this.navItems.slice(0, 3), ...categoryNavItems];

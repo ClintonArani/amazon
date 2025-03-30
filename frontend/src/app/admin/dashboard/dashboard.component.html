@@ -13,7 +13,7 @@
     <!-- Summary Cards -->
     <div class="row mt-3">
       <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card border-left-primary shadow-lg border-0 h-100 py-2">
           <div class="card-body">
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
@@ -29,7 +29,7 @@
       </div>
   
       <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
+        <div class="card border-left-success shadow-lg border-0 h-100 py-2">
           <div class="card-body">
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
@@ -45,7 +45,7 @@
       </div>
   
       <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
+        <div class="card border-left-info shadow-lg border-0 h-100 py-2">
           <div class="card-body">
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
@@ -61,10 +61,10 @@
       </div>
   
       <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card border-left-warning shadow-lg border-0 h-100 py-2">
           <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
+            <div class="row no-gutters align-items-center ">
+              <div class="col mr-2 ">
                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Total Orders</div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalOrders}}</div>
               </div>
@@ -81,7 +81,7 @@
     <div class="row mb-4">
       <!-- Order Status Chart -->
       <div class="col-xl-6 col-lg-6">
-        <div class="card shadow mb-4">
+        <div class="card shadow-lg border-0 mb-4">
           <div class="card-header py-3 bg-white border-0">
             <h6 class="m-0 font-weight-bold text-primary">Order Status Distribution</h6>
           </div>
@@ -95,7 +95,7 @@
 
       <!-- Monthly Sales Chart -->
       <div class="col-xl-6 col-lg-6">
-        <div class="card shadow mb-4">
+        <div class="card shadow-lg border-0 mb-4">
           <div class="card-header py-3 bg-white border-0">
             <h6 class="m-0 font-weight-bold text-primary">Monthly Sales</h6>
           </div>
@@ -112,7 +112,7 @@
     <div class="row mb-4">
       <!-- User Activity Chart -->
       <div class="col-xl-6 col-lg-6">
-        <div class="card shadow mb-4">
+        <div class="card shadow-lg mb-4 border-0">
           <div class="card-header py-3 bg-white border-0">
             <h6 class="m-0 font-weight-bold text-primary">User Activity</h6>
           </div>
@@ -126,7 +126,7 @@
 
       <!-- Top Products Chart -->
       <div class="col-xl-6 col-lg-6">
-        <div class="card shadow mb-4">
+        <div class="card shadow-lg border-0 mb-4">
           <div class="card-header py-3 bg-white border-0">
             <h6 class="m-0 font-weight-bold text-primary">Top Products by Revenue</h6>
           </div>
@@ -144,7 +144,7 @@
     </div>
 
     <!-- Recent Orders Table -->
-    <div class="card shadow mb-4">
+    <div class="card shadow-lg border-0 mb-4">
       <div class="card-header py-3 bg-white border-0">
         <h6 class="m-0 font-weight-bold text-primary">Recent Orders</h6>
       </div>
@@ -166,7 +166,7 @@
                 <td>{{i + 1}}</td>
                 <td>{{order.customer}}</td>
                 <td>{{order.date}}</td>
-                <td>${{order.amount}}</td>
+                <td>{{order.amount | currency:'Ksh':'symbol':'1.2-2'}}</td>
                
                 <td>
                   <span [ngClass]="{
@@ -200,7 +200,7 @@
     </div>
   
     <!-- Top Products Table -->
-    <div class="card shadow mb-4">
+    <div class="card shadow-lg mb-4 border-0">
       <div class="card-header py-3 border-0 bg-white">
         <h6 class="m-0 font-weight-bold text-primary">Top Selling Products</h6>
       </div>
@@ -218,7 +218,7 @@
               <tr *ngFor="let product of topProducts">
                 <td>{{product.name}}</td>
                 <td>{{product.sales}}</td>
-                <td>${{product.revenue}}</td>
+                <td>{{product.revenue | currency:'Ksh':'symbol':'1.2-2'}}</td>
               </tr>
             </tbody>
           </table>

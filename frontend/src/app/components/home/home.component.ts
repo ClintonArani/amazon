@@ -60,7 +60,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.allProducts = productsResponse.products.map((product: any) => ({
               ...product,
               image_path: `http://localhost:3900/${product.image_path}`,
-              category_name: this.getCategoryName(product.category_id) // Add category_name here
+              category_name: product.category_name
             }));
             this.filteredProducts = [...this.allProducts];
             this.updatePagination();
@@ -94,19 +94,23 @@ export class HomeComponent implements OnInit, OnDestroy {
     );
   }
 
-  applyFilters(searchQuery: string, categoryId: string): void {
-    this.filteredProducts = this.allProducts.filter(product => {
-      const categoryMatch = categoryId === 'all' || product.category_id === categoryId;
-      const searchMatch = !searchQuery || 
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        this.getCategoryName(product.category_id).toLowerCase().includes(searchQuery.toLowerCase());
-      
-      return categoryMatch && searchMatch;
-    });
+  // In home.component.ts
+applyFilters(searchQuery: string, categoryId: string): void {
+  this.filteredProducts = this.allProducts.filter(product => {
+    // Category filter
+    const categoryMatch = categoryId === 'all' || product.category_id === categoryId;
+    
+    // Search filter - checks both product name and category name
+    const searchMatch = !searchQuery || 
+      product.name.toLowerCase().includes(searchQuery) || 
+      (product.category_name && product.category_name.toLowerCase().includes(searchQuery));
+    
+    return categoryMatch && searchMatch;
+  });
 
-    this.currentPage = 1;
-    this.updatePagination();
-  }
+  this.currentPage = 1;
+  this.updatePagination();
+}
 
   updatePagination(): void {
     this.totalPages = Math.ceil(this.filteredProducts.length / this.itemsPerPage);

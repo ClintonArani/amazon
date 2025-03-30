@@ -13,5 +13,5 @@ DELETE http://localhost:3900/cart-items/remove/6cb43afa-5388-451c-a32b-119272bc7
 Content-Type: application/json
 
 ### GET CART ITEMS FOR A USER
-GET http://localhost:3900/cart-items/items/a568cd46-1854-47c6-82be-fca9b1818e12
+GET http://localhost:3900/cart-items/items/fea4398a-1441-4497-ba48-3b502780f498
 Content-Type: application/json

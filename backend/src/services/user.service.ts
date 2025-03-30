@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs'
 
 import { sqlConfig } from '../config/sqlConfig';
 import { User } from '../interfaces/user.interface';
+import { EmailService } from './email.service';
 
 
 
@@ -224,6 +225,94 @@ export class userService{
             return {
                 error: `Error updating user: ${errorMessage}`
             };
+        }
+    }
+
+    async initiatePasswordReset(email: string): Promise<{ message?: string, error?: string }> {
+        let pool = await mssql.connect(sqlConfig);
+        
+        try {
+            // Check if email exists
+            let user = (await pool.request()
+                .input('email', mssql.VarChar, email)
+                .query('SELECT * FROM Users WHERE email = @email')).recordset[0];
+            
+            if (!user) {
+                return { error: 'Email not found' };
+            }
+            
+            // Generate a 6-digit reset code
+            const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+            
+            // Initialize email service
+            const emailService = new EmailService();
+            
+            // Store the reset code in the database
+            const stored = await emailService.storeResetCode(email, resetCode);
+            if (!stored) {
+                return { error: 'Failed to store reset code' };
+            }
+            
+            // Send the reset code via email
+            const sent = await emailService.sendResetCode(email, resetCode);
+            if (!sent) {
+                return { error: 'Failed to send reset code' };
+            }
+            
+            return { message: 'Reset code sent to your email' };
+        } catch (error) {
+            console.error('Error initiating password reset:', error);
+            return { error: 'Failed to initiate password reset' };
+        }
+    }
+    
+    async verifyResetCode(email: string, resetCode: string): Promise<{ message?: string, error?: string }> {
+        try {
+            const emailService = new EmailService();
+            const isValid = await emailService.validateResetCode(email, resetCode);
+            
+            if (!isValid) {
+                return { error: 'Invalid or expired reset code' };
+            }
+            
+            return { message: 'Reset code verified successfully' };
+        } catch (error) {
+            console.error('Error verifying reset code:', error);
+            return { error: 'Failed to verify reset code' };
+        }
+    }
+    
+    async resetPassword(email: string, resetCode: string, newPassword: string): Promise<{ message?: string, error?: string }> {
+        let pool = await mssql.connect(sqlConfig);
+        
+        try {
+            // First verify the reset code
+            const verification = await this.verifyResetCode(email, resetCode);
+            if (verification.error) {
+                return verification;
+            }
+            
+            // Hash the new password
+            const hashedPassword = bcrypt.hashSync(newPassword, 6);
+            
+            // Update the password in the database
+            const result = await pool.request()
+                .input('email', mssql.VarChar, email)
+                .input('password', mssql.VarChar, hashedPassword)
+                .query('UPDATE Users SET password = @password WHERE email = @email');
+            
+            if (result.rowsAffected[0] === 1) {
+                // Delete the used reset code
+                const emailService = new EmailService();
+                await emailService.deleteResetCode(email);
+                
+                return { message: 'Password reset successfully' };
+            } else {
+                return { error: 'Failed to reset password' };
+            }
+        } catch (error) {
+            console.error('Error resetting password:', error);
+            return { error: 'Failed to reset password' };
         }
     }
 }

@@ -12,19 +12,15 @@ export class ProductService {
         let product_id = v4();
         let createdAt = new Date();
     
-        // Check if the image file is valid
         if (!imageFile || !imageFile.name) {
             throw new Error("No file uploaded or file is invalid");
         }
-    
-        // Save the uploaded image to the "uploads" folder
-        const imageName = `${Date.now()}-${imageFile.name}`; // Generate a unique filename
+
+        const imageName = `${Date.now()}-${imageFile.name}`; 
         const imagePath = path.join(__dirname, '..', 'uploads', imageName);
     
-        // Move the uploaded file to the uploads folder
         await imageFile.mv(imagePath);
     
-        // Store the relative path in the database
         const relativeImagePath = `uploads/${imageName}`;
     
         if (pool.connected) {
@@ -33,7 +29,7 @@ export class ProductService {
                 .input("name", mssql.VarChar, product.name)
                 .input("description", mssql.Text, product.description)
                 .input("price", mssql.Decimal(10, 2), product.price)
-                .input("image_path", mssql.VarChar, relativeImagePath) // Store the relative path
+                .input("image_path", mssql.VarChar, relativeImagePath)
                 .input("stock_quantity", mssql.Int, product.stock_quantity)
                 .input("category_id", mssql.VarChar, product.category_id)
                 .input("createdAt", mssql.DateTime, createdAt)
@@ -42,10 +38,9 @@ export class ProductService {
             if (result[0] == 1) {
                 return {
                     message: "Product added successfully",
-                    imagePath: relativeImagePath // Return the relative path
+                    imagePath: relativeImagePath 
                 };
             } else {
-                // Delete the uploaded image if the product creation fails
                 fs.unlinkSync(imagePath);
                 return {
                     error: "Unable to add product"
@@ -60,10 +55,10 @@ export class ProductService {
 
     async getAllProducts() {
         let pool = await mssql.connect(sqlConfig);
-
+    
         let result = (await pool.request()
             .execute("getAllProducts")).recordset;
-
+    
         if (result.length == 0) {
             return {
                 message: "No products available"
@@ -77,11 +72,11 @@ export class ProductService {
 
     async getSingleProduct(product_id: string) {
         let pool = await mssql.connect(sqlConfig);
-
+    
         let result = (await pool.request()
             .input("id", mssql.VarChar, product_id)
             .execute("getSingleProduct")).recordset;
-
+    
         if (result.length === 0) {
             return {
                 error: "Product not found or has been deleted"
@@ -96,8 +91,7 @@ export class ProductService {
     async updateProduct(product_id: string, updatedProduct: Partial<Product>, imageFile?: any) {
         let pool = await mssql.connect(sqlConfig);
         let updatedAt = new Date();
-    
-        // If a new image is uploaded, save it and update the image path
+
         let imagePath: string | undefined = updatedProduct.image_path;
         if (imageFile && imageFile.name) {
             imagePath = path.join(__dirname, '..', 'uploads', imageFile.name);

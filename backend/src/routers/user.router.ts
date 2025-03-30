@@ -11,5 +11,7 @@ user_router.get('/:user_id', controller.fetchSingleUser);
 user_router.put('/:user_id', controller.updateUser); // Add this route for updating user
 user_router.patch('/update/:user_id', controller.updateUser);
 user_router.delete('/delete/:user_id', controller.deleteUser);
-
+user_router.post('/forgot-password', controller.initiatePasswordReset);
+user_router.post('/verify-reset-code', controller.verifyResetCode);
+user_router.post('/reset-password', controller.resetPassword);
 export default user_router;

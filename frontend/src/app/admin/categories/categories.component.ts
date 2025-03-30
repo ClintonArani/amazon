@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 })
 export class CategoriesComponent implements OnInit {
   categoryForm!: FormGroup;
-  categories: any[] = [];
+  categories: any[] = []; // Initialize as empty array
   isEditMode = false;
   selectedCategory: any = null;
   isModalOpen = false;
@@ -32,7 +32,6 @@ export class CategoriesComponent implements OnInit {
     this.loadCategories();
   }
 
-  // Initialize the form
   initializeForm(): void {
     this.categoryForm = this.fb.group({
       name: ['', Validators.required],
@@ -40,52 +39,55 @@ export class CategoriesComponent implements OnInit {
     });
   }
 
-  // Load all categories
   loadCategories(): void {
-    this.categoryService.getAllCategories().subscribe(
-      (response) => {
-        this.categories = response.categories; // Assuming the API returns { categories: [] }
-        this.calculateTotalPages(); // Calculate total pages after loading categories
+    this.categoryService.getAllCategories().subscribe({
+      next: (response) => {
+        this.categories = response?.categories || []; // Safe navigation with fallback
+        this.calculateTotalPages();
       },
-      (error) => {
+      error: (error) => {
         console.error('Error loading categories:', error);
+        this.categories = []; // Ensure categories is always an array
+        this.calculateTotalPages();
       }
-    );
+    });
   }
 
-  // Calculate total pages based on the number of categories
   calculateTotalPages(): void {
-    this.totalPages = Math.ceil(this.categories.length / this.itemsPerPage);
+    this.totalPages = Math.ceil(this.categories.length / this.itemsPerPage) || 1; // Ensure at least 1 page
   }
 
-  // Get categories for the current page
   getPaginatedCategories(): any[] {
+    if (!this.categories || this.categories.length === 0) {
+      return [];
+    }
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     return this.categories.slice(startIndex, endIndex);
   }
 
-  // Open modal for adding a new category
   openAddCategoryModal(): void {
     this.isEditMode = false;
+    this.selectedCategory = null;
     this.categoryForm.reset();
     this.isModalOpen = true;
   }
 
-  // Open modal for editing a category
   openEditCategoryModal(category: any): void {
     this.isEditMode = true;
     this.selectedCategory = category;
-    this.categoryForm.patchValue(category);
+    this.categoryForm.patchValue({
+      name: category.name,
+      description: category.description
+    });
     this.isModalOpen = true;
   }
 
-  // Close the modal
   closeModal(): void {
     this.isModalOpen = false;
+    this.categoryForm.reset();
   }
 
-  // Handle form submission
   onSubmit(): void {
     if (this.categoryForm.invalid) {
       return;
@@ -93,67 +95,61 @@ export class CategoriesComponent implements OnInit {
 
     const categoryData = this.categoryForm.value;
 
-    if (this.isEditMode) {
-      // Update existing category
-      this.categoryService.updateCategory(this.selectedCategory.id, categoryData).subscribe(
-        (response) => {
+    if (this.isEditMode && this.selectedCategory) {
+      this.categoryService.updateCategory(this.selectedCategory.id, categoryData).subscribe({
+        next: (response) => {
           this.showSuccessMessage('Category updated successfully!');
           this.closeModal();
-          this.loadCategories(); // Reload categories after update
+          this.loadCategories();
         },
-        (error) => {
+        error: (error) => {
           console.error('Error updating category:', error);
         }
-      );
+      });
     } else {
-      // Create new category
-      this.categoryService.addCategory(categoryData).subscribe(
-        (response) => {
+      this.categoryService.addCategory(categoryData).subscribe({
+        next: (response) => {
           this.showSuccessMessage('Category created successfully!');
           this.closeModal();
-          this.loadCategories(); // Reload categories after creation
+          this.loadCategories();
         },
-        (error) => {
+        error: (error) => {
           console.error('Error creating category:', error);
         }
-      );
+      });
     }
   }
 
-  // Show confirmation dialog before deleting a category
   confirmDeleteCategory(category: any): void {
     this.categoryToDelete = category;
     this.showConfirmation = true;
   }
 
-  // Confirm deletion
   confirmDelete(): void {
     if (this.categoryToDelete) {
-      this.categoryService.deleteCategory(this.categoryToDelete.id).subscribe(
-        () => {
+      this.categoryService.deleteCategory(this.categoryToDelete.id).subscribe({
+        next: () => {
           this.showSuccessMessage('Category deleted successfully!');
           this.cancelDelete();
-          this.loadCategories(); // Reload categories after deletion
+          this.loadCategories();
         },
-        (error) => {
+        error: (error) => {
           console.error('Error deleting category:', error);
         }
-      );
+      });
     }
   }
 
-  // Cancel deletion
   cancelDelete(): void {
     this.categoryToDelete = null;
     this.showConfirmation = false;
   }
 
-  // Show success message
   showSuccessMessage(message: string): void {
     this.successMessage = message;
     setTimeout(() => {
       this.successMessage = null;
-    }, 3000); // Hide the message after 3 seconds
+    }, 3000);
   }
 
   // Pagination methods

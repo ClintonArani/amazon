@@ -36,19 +36,29 @@
         </div>
 
         <!-- Search Box -->
-        <div class="d-flex align-items-center gap-2 w-50">
-          <select class="form-select w-25 rounded-start" [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
-            <option value="all">All Categories</option>
+        <div class="d-flex align-items-center gap-2 w-30">
+          <select class="form-select w-30 rounded-start" [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
+            <option value="all">Categories</option>
             <option *ngFor="let category of categories" [value]="category.id">
               {{ category.name }}
             </option>
           </select>
           <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search here" [(ngModel)]="searchQuery">
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Search by product or category name" 
+              [(ngModel)]="searchQuery"
+              (keyup.enter)="onSearch()" 
+            >
             <button class="btn btn-danger rounded-end" (click)="onSearch()">Search</button>
           </div>
         </div>
 
+        <ul class="text-white list-unstyled d-flex justify-content-center align-items-center gap-4 text-capitalize">
+          <li routerLink="/home" class="fw-bold fs-5 hover-text-primary">home</li>
+          <li class="fw-bold fs-5">info</li>
+        </ul>
         <!-- Cart -->
         <div class="d-flex flex-column align-items-center text-white position-relative">
           <i routerLink="/cart" class="fas fa-shopping-cart fs-4"></i>
@@ -57,26 +67,7 @@
             {{ cartItemCount }}
           </span>
         </div>
-
       </div>
-    </div>
-  </div>
-
-  <!-- Bottom Section (Navigation) -->
-  <div class="bottom bg-white shadow-sm py-3">
-    <div class="container">
-      <ul class="nav gap-3">
-        <li class="nav-item" *ngFor="let item of navItems">
-          <a
-            class="nav-link fw-bold"
-            [ngClass]="{ 'active text-danger': item.active }"
-          
-            [routerLink]="item.route"
-          >
-            {{ item.name }}
-          </a>
-        </li>
-      </ul>
     </div>
   </div>
 </div>
