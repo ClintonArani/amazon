@@ -137,6 +137,7 @@ export class userController {
             
             return res.status(200).json(result);
         } catch (error) {
+            console.error('Error in initiatePasswordReset:', error);
             return res.status(500).json({ error: 'Internal server error' });
         }
     }
@@ -157,6 +158,7 @@ export class userController {
             
             return res.status(200).json(result);
         } catch (error) {
+            console.error('Error in verifyResetCode:', error);
             return res.status(500).json({ error: 'Internal server error' });
         }
     }
@@ -169,10 +171,6 @@ export class userController {
                 return res.status(400).json({ error: 'Email, reset code and new password are required' });
             }
             
-            if (newPassword.length < 6) {
-                return res.status(400).json({ error: 'Password must be at least 6 characters' });
-            }
-            
             const result = await service.resetPassword(email, resetCode, newPassword);
             
             if (result.error) {
@@ -181,6 +179,7 @@ export class userController {
             
             return res.status(200).json(result);
         } catch (error) {
+            console.error('Error in resetPassword:', error);
             return res.status(500).json({ error: 'Internal server error' });
         }
     }

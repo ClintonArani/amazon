@@ -227,18 +227,17 @@ export class userService{
             };
         }
     }
-
     async initiatePasswordReset(email: string): Promise<{ message?: string, error?: string }> {
         let pool = await mssql.connect(sqlConfig);
         
         try {
-            // Check if email exists
+            // Check if email exists and user is active
             let user = (await pool.request()
                 .input('email', mssql.VarChar, email)
-                .query('SELECT * FROM Users WHERE email = @email')).recordset[0];
+                .query('SELECT * FROM Users WHERE email = @email AND isActive = 1 AND isDelete = 0')).recordset[0];
             
             if (!user) {
-                return { error: 'Email not found' };
+                return { error: 'Email not found or account is inactive' };
             }
             
             // Generate a 6-digit reset code
@@ -292,6 +291,11 @@ export class userService{
                 return verification;
             }
             
+            // Validate password length
+            if (newPassword.length < 6) {
+                return { error: 'Password must be at least 6 characters' };
+            }
+            
             // Hash the new password
             const hashedPassword = bcrypt.hashSync(newPassword, 6);
             
@@ -299,7 +303,8 @@ export class userService{
             const result = await pool.request()
                 .input('email', mssql.VarChar, email)
                 .input('password', mssql.VarChar, hashedPassword)
-                .query('UPDATE Users SET password = @password WHERE email = @email');
+                .input('updatedAt', mssql.DateTime, new Date())
+                .query('UPDATE Users SET password = @password, updatedAt = @updatedAt, isUpdated = 1 WHERE email = @email');
             
             if (result.rowsAffected[0] === 1) {
                 // Delete the used reset code
@@ -315,4 +320,5 @@ export class userService{
             return { error: 'Failed to reset password' };
         }
     }
+
 }

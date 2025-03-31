@@ -1,16 +1,22 @@
 import nodemailer from 'nodemailer';
 import { sqlConfig } from '../config/sqlConfig';
 import mssql from 'mssql';
+import { v4 } from 'uuid';
 
 export class EmailService {
     private transporter: nodemailer.Transporter;
 
     constructor() {
         this.transporter = nodemailer.createTransport({
-            service: 'gmail', // or your email service
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,  // true for 465
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASSWORD
+            },
+            tls: {
+                rejectUnauthorized: false // For local development only
             }
         });
     }
@@ -37,16 +43,22 @@ export class EmailService {
         let pool = await mssql.connect(sqlConfig);
         
         try {
-            // Store the reset code with an expiration time (e.g., 15 minutes)
-            const expirationTime = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
+            // First delete any existing reset codes for this email
+            await pool.request()
+                .input('email', mssql.VarChar, email)
+                .query('DELETE FROM PasswordResetCodes WHERE email = @email');
+            
+            // Store the new reset code with an expiration time (15 minutes)
+            const expirationTime = new Date(Date.now() + 15 * 60 * 1000);
             
             await pool.request()
+                .input('id', mssql.VarChar, v4())
                 .input('email', mssql.VarChar, email)
                 .input('resetCode', mssql.VarChar, resetCode)
                 .input('expirationTime', mssql.DateTime, expirationTime)
                 .query(`
-                    INSERT INTO PasswordResetCodes (email, resetCode, expirationTime)
-                    VALUES (@email, @resetCode, @expirationTime)
+                    INSERT INTO PasswordResetCodes (id, email, resetCode, expirationTime)
+                    VALUES (@id, @email, @resetCode, @expirationTime)
                 `);
                 
             return true;
