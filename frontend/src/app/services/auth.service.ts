@@ -3,6 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode'; 
+interface User {
+  id: string;
+  name?: string;
+  email: string;
+  role?: string;
+  // Add other properties from your JWT token as needed
+}
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +18,7 @@ export class AuthService {
   private apiUrl = 'http://localhost:3900/auth/login'; 
   private logoutUrl = 'http://localhost:3900/auth/logout'; 
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, ) {}
 
   login(credentials: { email: string; password: string }): Observable<{ token: string; role: string; message: string }> {
     return this.http.post<{ token: string; role: string; message: string }>(this.apiUrl, credentials).pipe(
@@ -51,6 +58,25 @@ export class AuthService {
           },
         })
       );
+  }
+
+  getCurrentUser(): User | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const decodedToken: any = jwtDecode(token);
+      return {
+        id: decodedToken.id,
+        name: decodedToken.name,
+        email: decodedToken.email,
+        role: decodedToken.role
+        // Add other properties from your JWT token
+      };
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
   }
 
   private clearLocalStorageAndNavigate(): void {

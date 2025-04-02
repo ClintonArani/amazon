@@ -183,4 +183,62 @@ export class userController {
             return res.status(500).json({ error: 'Internal server error' });
         }
     }
+
+    async addProfilePhoto(req: Request, res: Response) {
+        try {
+            let { user_id } = req.params;
+            
+            if (!req.files || !req.files.profilePhoto) {
+                return res.status(400).json({
+                    error: "Profile photo file is required",
+                    userId: user_id
+                });
+            }
+    
+            const profilePhoto = req.files.profilePhoto as any;
+            let result = await service.addProfilePhoto(user_id, profilePhoto);
+    
+            return res.status(200).json({
+                ...result,
+                userId: user_id // Explicitly include user ID in response
+            });
+        } catch (error: any) {
+            console.error(`Error updating profile for user ${req.params.user_id}:`, error);
+            return res.status(500).json({
+                error: error.message,
+                userId: req.params.user_id,
+                message: "Failed to update profile photo"
+            });
+        }
+    }
+
+    async updateProfilePhoto(req: Request, res: Response) {
+        try {
+            let { user_id } = req.params;
+            
+            if (!req.files || !req.files.profilePhoto) {
+                return res.status(400).json({
+                    error: "Profile photo file is required for update",
+                    userId: user_id
+                });
+            }
+    
+            const profilePhoto = req.files.profilePhoto as any;
+            let result = await service.updateProfilePhoto(user_id, profilePhoto);
+    
+            return res.status(200).json({
+                ...result,
+                userId: user_id,
+                action: "update" // Explicitly indicate this was an update
+            });
+        } catch (error: any) {
+            console.error(`Error updating profile photo for user ${req.params.user_id}:`, error);
+            return res.status(500).json({
+                error: error.message,
+                userId: req.params.user_id,
+                action: "update",
+                message: "Failed to update profile photo"
+            });
+        }
+    }
 }

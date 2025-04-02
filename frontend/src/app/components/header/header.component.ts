@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, Router, NavigationEnd } from '@angular/router';
 import { ProductService } from '../../services/product.service'; // Changed from CategoriesService
 import { Subscription, filter } from 'rxjs';
-import { CartService } from '../../services/cart-service.service';
+import { CartService } from '../../services/cart.service';
 import { FilterService } from '../../services/filter.service';
 
 interface NavItem {

@@ -5,19 +5,13 @@
       <img src="assets/Moh.png" alt="Company Logo" class="logo">
     </div>
     <ul class="sidebar-tabs">
-      <li routerLink="/admin/dashboard" [class.active]="activeTab === 'overview'" (click)="setActiveTab('overview')">
+      <li routerLink="/info/dashboard" [class.active]="activeTab === 'overview'" (click)="setActiveTab('overview')">
         <i class="fas fa-home"></i> Overview
       </li>
-      <li routerLink="/admin/manage-users" [class.active]="activeTab === 'manageUser'" (click)="setActiveTab('manageUser')">
-        <i class="fas fa-users"></i> Manage User
+      <li (click)="history()" [class.active]="activeTab === 'history'">
+        <i class="fas fa-chart-line"></i> History
       </li>
-      <li routerLink="/admin/manage-product-categories" [class.active]="activeTab === 'postInternships'" (click)="setActiveTab('postInternships')">
-        <i class="fas fa-briefcase"></i> Category List
-      </li>
-      <li routerLink="/admin/manage-product" [class.active]="activeTab === 'reportsAnalytics'" (click)="setActiveTab('reportsAnalytics')">
-        <i class="fas fa-chart-line"></i> Products
-      </li>
-      <li (click)="onLogout($event)">
+      <li (click)="logout()">
         <i class="fas fa-sign-out-alt"></i> Logout
       </li>
     </ul>
@@ -27,7 +21,7 @@
   <div class="main-content" [class.dark-mode]="isDarkMode" (click)="hideSidebarOnOutsideClick()">
     <!-- Navbar -->
     <nav class="navbar d-flex shadow-lg border-0 rounded">
-      <strong>Welcome to your Admin dashboard, {{userFullName}}</strong>
+      <h4>Welcome {{userFullName}}</h4>
       <div class="navbar-left">
         <div class="menu-icon" (click)="toggleSidebar($event)" tabindex="0" aria-label="Toggle Sidebar">
           <i class="fas fa-bars"></i>

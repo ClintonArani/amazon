@@ -88,7 +88,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           active: this.activeUsers,
           inactive: this.totalUsers - this.activeUsers
         };
-        this.totalProducts = products.length;
+        // Calculate total products by summing quantities
+        this.totalProducts = products.reduce((sum, product) => sum + (product.stock_quantity || 0), 0);
         this.totalOrders = allOrders.length;
         this.recentOrders = this.processRecentOrders(recentOrders);
         this.topProducts = this.processTopProducts(topProducts);
@@ -173,7 +174,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       data: {
         labels: monthNames,
         datasets: [{
-          label: 'Sales Amount ($)',
+          label: 'Sales Amount (Ksh)',
           data: sortedMonths.map(monthKey => monthlySales[monthKey]),
           fill: false,
           backgroundColor: '#4e73df',
@@ -188,7 +189,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         scales: {
           y: {
             beginAtZero: true,
-            ticks: { callback: (value: unknown) => `$${value}` }
+            ticks: { callback: (value: unknown) => `Ksh${value}` }
           }
         }
       }
@@ -240,7 +241,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       data: {
         labels: products.map(p => p.name),
         datasets: [{
-          label: 'Revenue ($)',
+          label: 'Revenue (Ksh)',
           data: products.map(p => p.revenue),
           backgroundColor: '#36b9cc',
           borderColor: '#36b9cc',
@@ -254,7 +255,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         scales: {
           y: {
             beginAtZero: true,
-            ticks: { callback: (value: unknown) => `$${value}` }
+            ticks: { callback: (value: unknown) => `Ksh${value}` }
           }
         }
       }

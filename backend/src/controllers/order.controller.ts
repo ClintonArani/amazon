@@ -104,4 +104,77 @@ export class OrderController {
             });
         }
     }
+
+    async getUserOrders(req: Request, res: Response) {
+        try {
+            const { user_id } = req.params;
+            const result = await service.getUserOrders(user_id);
+            
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({
+                error: "An error occurred while fetching user orders",
+                details: (error as Error).message
+            });
+        }
+    }
+    
+    async getUserMonthlySpending(req: Request, res: Response) {
+        try {
+            const { user_id } = req.params;
+            const months = parseInt(req.query.months as string) || 6;
+            const result = await service.getUserMonthlySpending(user_id, months);
+            
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({
+                error: "An error occurred while fetching monthly spending",
+                details: (error as Error).message
+            });
+        }
+    }
+    
+    async getUserRecentOrders(req: Request, res: Response) {
+        try {
+            const { user_id } = req.params;
+            const limit = parseInt(req.query.limit as string) || 5;
+            const result = await service.getUserRecentOrders(user_id, limit);
+            
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({
+                error: "An error occurred while fetching user recent orders",
+                details: (error as Error).message
+            });
+        }
+    }
+    
+    async getRecommendedProducts(req: Request, res: Response) {
+        try {
+            const { user_id } = req.params;
+            const limit = parseInt(req.query.limit as string) || 5;
+            const result = await service.getRecommendedProducts(user_id, limit);
+            
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({
+                error: "An error occurred while fetching recommended products",
+                details: (error as Error).message
+            });
+        }
+    }
+    
+    async getUserPurchaseHistory(req: Request, res: Response) {
+        try {
+            const { user_id } = req.params;
+            const result = await service.getUserPurchaseHistory(user_id);
+            
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({
+                error: "An error occurred while fetching purchase history",
+                details: (error as Error).message
+            });
+        }
+    }
 }

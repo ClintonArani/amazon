@@ -1,3 +1,4 @@
+/* Existing styles from admin component */
 :root {
   --bg-color: #fff;
   --text-color: #000;
@@ -13,13 +14,11 @@ body {
   color: var(--text-color);
 }
 
-/* Dashboard Layout */
 .dashboard-container {
   display: flex;
   min-height: 100vh;
 }
 
-/* Sidebar */
 .sidebar {
   width: 210px;
   background-color: black;
@@ -64,7 +63,6 @@ body {
   margin-right: 10px;
 }
 
-/* Main Content */
 .main-content {
   width: 100%;
   padding: 0 5px;
@@ -75,7 +73,6 @@ body {
   transition: margin-left 0.3s ease-in-out;
 }
 
-/* Navbar */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -147,7 +144,15 @@ body {
   object-fit: cover;
 }
 
-/* Profile Photo Modal */
+.content-area {
+  box-sizing: border-box;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 20px;
+}
+
+/* New Profile Photo Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -259,7 +264,6 @@ body {
   cursor: not-allowed;
 }
 
-/* Success Message */
 .success-message {
   position: fixed;
   bottom: 20px;
@@ -306,20 +310,6 @@ body {
   color: #495057;
 }
 
-/* Content Area */
-.content-area {
-  box-sizing: border-box;
-  overflow: hidden;
-  width: 100%;
-  max-width: 100%;
-  padding: 0 20px;
-}
-.logo{
-  width: 100px;
-  height: 120px;
-  border-radius: 50%;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .sidebar {
@@ -337,4 +327,10 @@ body {
   .profile-photo-modal {
     width: 95%;
   }
+}
+
+.logo{
+  width: 100px;
+  height: 120px;
+  border-radius: 50%;
 }

@@ -91,18 +91,30 @@ export class ProductService {
     async updateProduct(product_id: string, updatedProduct: Partial<Product>, imageFile?: any) {
         let pool = await mssql.connect(sqlConfig);
         let updatedAt = new Date();
-
-        let imagePath: string | undefined = updatedProduct.image_path;
-        if (imageFile && imageFile.name) {
-            imagePath = path.join(__dirname, '..', 'uploads', imageFile.name);
     
-            try {
-                await imageFile.mv(imagePath);
-                console.log("File saved successfully:", imagePath);
-            } catch (error) {
-                console.error("Error saving file:", error);
-                throw new Error("Failed to save the uploaded file");
-            }
+        // First get the current product to find the old image path
+        const currentProduct = (await pool.request()
+            .input("id", mssql.VarChar, product_id)
+            .execute("getSingleProduct")).recordset[0];
+    
+        if (!currentProduct) {
+            throw new Error("Product not found");
+        }
+    
+        let imagePath: string | undefined = currentProduct.image_path;
+        let oldImagePath: string | undefined;
+    
+        if (imageFile && imageFile.name) {
+            // Generate new image path
+            const imageName = `${Date.now()}-${imageFile.name}`;
+            const newImagePath = path.join(__dirname, '..', 'uploads', imageName);
+    
+            // Save the new image
+            await imageFile.mv(newImagePath);
+    
+            // Set paths for update
+            oldImagePath = path.join(__dirname, '..', currentProduct.image_path);
+            imagePath = `uploads/${imageName}`;
         }
     
         try {
@@ -113,26 +125,38 @@ export class ProductService {
                 .input("price", mssql.Decimal(10, 2), updatedProduct.price)
                 .input("image_path", mssql.VarChar, imagePath)
                 .input("stock_quantity", mssql.Int, updatedProduct.stock_quantity)
-                .input("category_id", mssql.VarChar, updatedProduct.category_id) // Use "category_id"
+                .input("category_id", mssql.VarChar, updatedProduct.category_id)
                 .input("updatedAt", mssql.DateTime, updatedAt)
                 .execute("updateProduct")).rowsAffected;
     
             if (result[0] == 1) {
+                // Delete the old image if it was replaced
+                if (oldImagePath && fs.existsSync(oldImagePath)) {
+                    fs.unlinkSync(oldImagePath);
+                }
                 return {
                     message: "Product updated successfully",
                     imagePath
                 };
             } else {
-                if (imageFile && imagePath && fs.existsSync(imagePath)) {
-                    fs.unlinkSync(imagePath);
+                // If update failed, delete the new image that was just saved
+                if (imageFile && imagePath) {
+                    const newImageFullPath = path.join(__dirname, '..', imagePath);
+                    if (fs.existsSync(newImageFullPath)) {
+                        fs.unlinkSync(newImageFullPath);
+                    }
                 }
                 return {
                     error: "Unable to update product"
                 };
             }
         } catch (error) {
-            if (imageFile && imagePath && fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath);
+            // If error occurred, delete the new image that was just saved
+            if (imageFile && imagePath) {
+                const newImageFullPath = path.join(__dirname, '..', imagePath);
+                if (fs.existsSync(newImageFullPath)) {
+                    fs.unlinkSync(newImageFullPath);
+                }
             }
             throw error;
         }

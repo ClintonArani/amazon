@@ -161,4 +161,109 @@ export class OrderService {
             throw new Error(`Failed to fetch sales overview: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
     }
+
+    async getUserOrders(user_id: string) {
+        let pool = await mssql.connect(sqlConfig);
+        
+        try {
+            let result = await pool.request()
+                .input("user_id", mssql.VarChar, user_id)
+                .execute("getUserOrders");
+                
+            // Parse the JSON order_items for each order
+            const orders = result.recordset.map(order => ({
+                ...order,
+                order_items: order.order_items ? JSON.parse(order.order_items) : []
+            }));
+            
+            return {
+                success: true,
+                orders: orders
+            };
+        } catch (error) {
+            console.error("Error fetching user orders:", error);
+            throw new Error(`Failed to fetch user orders: ${(error as Error).message}`);
+        }
+    }
+    
+    async getUserMonthlySpending(user_id: string, months: number = 6) {
+        let pool = await mssql.connect(sqlConfig);
+        
+        try {
+            let result = await pool.request()
+                .input("user_id", mssql.VarChar, user_id)
+                .input("months", mssql.Int, months)
+                .execute("getUserMonthlySpending");
+                
+            return {
+                success: true,
+                monthlySpending: result.recordset
+            };
+        } catch (error) {
+            console.error("Error fetching user monthly spending:", error);
+            throw new Error(`Failed to fetch monthly spending: ${(error as Error).message}`);
+        }
+    }
+    
+    async getUserRecentOrders(user_id: string, limit: number = 5) {
+        let pool = await mssql.connect(sqlConfig);
+        
+        try {
+            let result = await pool.request()
+                .input("user_id", mssql.VarChar, user_id)
+                .input("limit", mssql.Int, limit)
+                .execute("getUserRecentOrders");
+                
+            // Parse the JSON order_items for each order
+            const orders = result.recordset.map(order => ({
+                ...order,
+                order_items: order.order_items ? JSON.parse(order.order_items) : []
+            }));
+            
+            return {
+                success: true,
+                orders: orders
+            };
+        } catch (error) {
+            console.error("Error fetching user recent orders:", error);
+            throw new Error(`Failed to fetch recent orders: ${(error as Error).message}`);
+        }
+    }
+    
+    async getRecommendedProducts(user_id: string, limit: number = 5) {
+        let pool = await mssql.connect(sqlConfig);
+        
+        try {
+            let result = await pool.request()
+                .input("user_id", mssql.VarChar, user_id)
+                .input("limit", mssql.Int, limit)
+                .execute("getRecommendedProducts");
+                
+            return {
+                success: true,
+                recommendedProducts: result.recordset
+            };
+        } catch (error) {
+            console.error("Error fetching recommended products:", error);
+            throw new Error(`Failed to fetch recommended products: ${(error as Error).message}`);
+        }
+    }
+
+    async getUserPurchaseHistory(user_id: string) {
+        let pool = await mssql.connect(sqlConfig);
+        
+        try {
+            let result = await pool.request()
+                .input("user_id", mssql.VarChar, user_id)
+                .execute("getUserPurchaseHistory");
+                
+            return {
+                success: true,
+                purchaseHistory: result.recordset
+            };
+        } catch (error) {
+            console.error("Error fetching user purchase history:", error);
+            throw new Error(`Failed to fetch purchase history: ${(error as Error).message}`);
+        }
+    }
 }

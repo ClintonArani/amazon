@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { HeaderComponent } from "../header/header.component";
-import { CartService } from '../../services/cart-service.service';
-
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-product-details',
@@ -20,11 +19,13 @@ export class ProductDetailsComponent implements OnInit {
   quantity: number = 1;
   cartMessage: string = '';
   isLoading: boolean = false;
+  isAddingToCart: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -49,32 +50,66 @@ export class ProductDetailsComponent implements OnInit {
     });
   }
 
+  addToCart(): void {
+    if (!this.product) return;
 
-addToCart(): void {
-  if (!this.product) return;
-
-  this.isLoading = true;
-  this.cartMessage = '';
-
-  this.cartService.addToCart(this.product.id, this.quantity).subscribe({
-    next: () => {
-      this.cartMessage = `${this.quantity} × ${this.product?.name} added to cart!`;
-      this.isLoading = false;
+    // Validate quantity
+    if (this.quantity <= 0) {
+      this.cartMessage = 'Quantity must be at least 1';
       setTimeout(() => this.cartMessage = '', 3000);
-    },
-    error: (error) => {
-      this.cartMessage = error.message || 'Failed to add to cart';
-      this.isLoading = false;
-      setTimeout(() => this.cartMessage = '', 3000);
+      return;
     }
-  });
-}
+
+    if (this.quantity > this.product.stock_quantity) {
+      this.cartMessage = `Only ${this.product.stock_quantity} items available!`;
+      setTimeout(() => this.cartMessage = '', 3000);
+      return;
+    }
+
+    this.isAddingToCart = true;
+    this.cartMessage = '';
+
+    this.cartService.addToCart(this.product.id, this.quantity).subscribe({
+      next: () => {
+        this.cartMessage = `${this.quantity} × ${this.product?.name} added to cart!`;
+        this.isAddingToCart = false;
+        
+        // Refresh the product details to show updated stock quantity
+        setTimeout(() => {
+          this.loadProductDetails(this.product.id);
+          this.quantity = 1; // Reset quantity after adding to cart
+        }, 1000);
+      },
+      error: (error) => {
+        this.cartMessage = error.error?.message || 'Failed to add to cart';
+        this.isAddingToCart = false;
+        setTimeout(() => this.cartMessage = '', 3000);
+      }
+    });
+  }
 
   incrementQuantity(): void {
-    if (this.quantity < 10) this.quantity++;
+    if (this.quantity < this.product?.stock_quantity) {
+      this.quantity++;
+    } else {
+      this.cartMessage = `Maximum available quantity is ${this.product?.stock_quantity}`;
+      setTimeout(() => this.cartMessage = '', 3000);
+    }
   }
 
   decrementQuantity(): void {
     if (this.quantity > 1) this.quantity--;
+  }
+
+  // Validate quantity when user types directly
+  validateQuantity(): void {
+    if (this.quantity < 1) {
+      this.quantity = 1;
+    }
+    if (this.product && this.quantity > this.product.stock_quantity) {
+      this.quantity = this.product.stock_quantity;
+      this.cartMessage = `Maximum available quantity is ${this.product.stock_quantity}`;
+      setTimeout(() => this.cartMessage = '', 3000);
+    }
   }
 }

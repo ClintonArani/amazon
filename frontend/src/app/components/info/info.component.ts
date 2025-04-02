@@ -1,47 +1,45 @@
-import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { UserService } from '../services/user.service';
-import { ProfileService } from '../services/profile.service';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
+import { ProfileService } from '../../services/profile.service';
+import { UserService } from '../../services/user.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-admin',
+  selector: 'app-info',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet],
-  templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.css']
+  imports: [RouterOutlet, CommonModule, RouterLink],
+  templateUrl: './info.component.html',
+  styleUrls: ['./info.component.css']
 })
-export class AdminComponent implements OnInit {
+export class InfoComponent implements OnInit {
   activeTab: string = 'overview';
   isSidebarVisible: boolean = false;
   isDarkMode: boolean = false;
-  notificationsCount: number = 3;
-  isLoading: boolean = false;
   userFullName!: string;
   userEmail: string = '';
   userAvatar: string = 'assets/image2.png';
   userId!: string;
 
-  // New properties for profile photo modal
+  // Profile photo modal properties
   showProfilePhotoModal: boolean = false;
   selectedFile: File | null = null;
   previewUrl: string | ArrayBuffer | null = null;
   showSuccessMessage: boolean = false;
   successMessage: string = '';
+  isLoading: boolean = false;
 
   @ViewChild('fileInput') fileInput!: ElementRef;
 
   constructor(
     private authService: AuthService,
     private userService: UserService,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    this.simulateLoading();
-    this.simulateRealTimeNotifications();
     this.loadUserFromToken();
   }
 
@@ -58,6 +56,7 @@ export class AdminComponent implements OnInit {
     }
   }
 
+  // Profile photo methods
   openProfilePhotoModal() {
     this.showProfilePhotoModal = true;
   }
@@ -94,42 +93,46 @@ export class AdminComponent implements OnInit {
 
       if (response && response.profilePath) {
         this.userAvatar = `http://localhost:3900/${response.profilePath}`;
-        this.showSuccessMessage = true;
-        this.successMessage = 'Profile photo updated successfully!';
-        setTimeout(() => {
-          this.showSuccessMessage = false;
-        }, 2000);
+        this.showSuccess('Profile photo updated successfully!');
       }
     } catch (error) {
       console.error('Profile photo upload failed:', error);
-      this.showSuccessMessage = true;
-      this.successMessage = 'Failed to upload profile photo';
-      setTimeout(() => {
-        this.showSuccessMessage = false;
-      }, 2000);
+      this.showSuccess('Failed to upload profile photo. Please try again.', false);
     } finally {
       this.isLoading = false;
       this.closeProfilePhotoModal();
     }
   }
 
-  onLogout(event: Event) {
-    event.preventDefault();
-    this.authService.logout().subscribe({
-      next: (response) => {
-        console.log(response.message);
-      },
-      error: (err) => {
-        console.error('Logout failed:', err);
-      },
-    });
+  private showSuccess(message: string, isSuccess: boolean = true) {
+    this.successMessage = message;
+    this.showSuccessMessage = true;
+    
+    setTimeout(() => {
+      this.showSuccessMessage = false;
+    }, 2000);
   }
 
+  // Navigation methods
   setActiveTab(tab: string) {
     this.activeTab = tab;
     this.hideSidebarOnSmallScreen();
   }
 
+  history() {
+    this.router.navigate(['/info/history']);
+    this.setActiveTab('history');
+  }
+
+  logout() {
+    this.router.navigate(['/home']);
+  }
+  overview(){
+    this.router.navigate(['/info/overview']);
+    this.setActiveTab('overview');
+  }
+
+  // UI methods
   toggleSidebar(event: Event) {
     event.stopPropagation();
     this.isSidebarVisible = !this.isSidebarVisible;
@@ -149,19 +152,6 @@ export class AdminComponent implements OnInit {
 
   toggleTheme() {
     this.isDarkMode = !this.isDarkMode;
-  }
-
-  simulateLoading() {
-    this.isLoading = true;
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 2000);
-  }
-
-  simulateRealTimeNotifications() {
-    setInterval(() => {
-      this.notificationsCount = Math.floor(Math.random() * 10);
-    }, 5000);
   }
 
   @HostListener('window:resize', ['$event'])

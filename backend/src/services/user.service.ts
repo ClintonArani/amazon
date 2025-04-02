@@ -2,6 +2,8 @@ import lodash from 'lodash'
 import mssql from 'mssql'
 import {v4} from 'uuid'
 import bcrypt from 'bcryptjs'
+import path from 'path';
+import fs from 'fs';
 
 import { sqlConfig } from '../config/sqlConfig';
 import { User } from '../interfaces/user.interface';
@@ -319,6 +321,81 @@ export class userService{
             console.error('Error resetting password:', error);
             return { error: 'Failed to reset password' };
         }
+    }
+
+    // Add these methods to your userService class
+
+    async addProfilePhoto(user_id: string, imageFile: any) {
+        let pool = await mssql.connect(sqlConfig);
+    
+        // Validate user exists first
+        const userExists = (await pool.request()
+            .input("user_id", mssql.VarChar, user_id)
+            .query("SELECT id FROM Users WHERE id = @user_id AND isDelete = 0")).recordset[0];
+    
+        if (!userExists) {
+            throw new Error("User not found or has been deleted");
+        }
+    
+        if (!imageFile || !imageFile.name) {
+            throw new Error("No file uploaded or file is invalid");
+        }
+    
+        const imageName = `${user_id}-${Date.now()}-${imageFile.name}`;
+        const imagePath = path.join(__dirname, '..', 'uploads', 'profiles', imageName);
+    
+        // Create profiles directory if it doesn't exist
+        const profilesDir = path.join(__dirname, '..', 'uploads', 'profiles');
+        if (!fs.existsSync(profilesDir)) {
+            fs.mkdirSync(profilesDir, { recursive: true });
+        }
+    
+        await imageFile.mv(imagePath);
+    
+        const relativeImagePath = `uploads/profiles/${imageName}`;
+        const updatedAt = new Date();
+    
+        // Get current profile to delete old image if exists
+        const currentUser = (await pool.request()
+            .input("user_id", mssql.VarChar, user_id)
+            .query("SELECT profile FROM Users WHERE id = @user_id")).recordset[0];
+    
+        if (pool.connected) {
+            let result = (await pool.request()
+                .input("user_id", mssql.VarChar, user_id)
+                .input("profile", mssql.VarChar, relativeImagePath)
+                .input("updatedAt", mssql.DateTime, updatedAt)
+                .query("UPDATE Users SET profile = @profile, updatedAt = @updatedAt, isUpdated = 1 WHERE id = @user_id")).rowsAffected;
+    
+            if (result[0] == 1) {
+                // Delete old profile photo if it exists
+                if (currentUser?.profile) {
+                    const oldImagePath = path.join(__dirname, '..', currentUser.profile);
+                    if (fs.existsSync(oldImagePath)) {
+                        fs.unlinkSync(oldImagePath);
+                    }
+                }
+                return {
+                    message: "Profile photo updated successfully",
+                    userId: user_id,
+                    profilePath: relativeImagePath,
+                    updatedAt: updatedAt.toISOString()
+                };
+            } else {
+                fs.unlinkSync(imagePath); // Delete the new image if update failed
+                throw new Error("Failed to update profile photo in database");
+            }
+        } else {
+            throw new Error("Database connection failed");
+        }
+    }
+
+    async updateProfilePhoto(user_id: string, imageFile: any) {
+        const result = await this.addProfilePhoto(user_id, imageFile);
+        return {
+            ...result,
+            message: "Profile photo updated successfully" 
+        };
     }
 
 }

@@ -14,4 +14,7 @@ user_router.delete('/delete/:user_id', controller.deleteUser);
 user_router.post('/forgot-password', controller.initiatePasswordReset);
 user_router.post('/verify-reset-code', controller.verifyResetCode);
 user_router.post('/reset-password', controller.resetPassword);
+
+user_router.post('/:user_id/profile-photo', controller.addProfilePhoto);
+user_router.put('/:user_id/profile-photo', controller.updateProfilePhoto);
 export default user_router;

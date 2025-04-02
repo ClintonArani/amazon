@@ -3,7 +3,7 @@ import { OrderService } from '../../services/order.service';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "../header/header.component";
 import { Subscription } from 'rxjs';
-import { CartService } from '../../services/cart-service.service';
+import { CartService } from '../../services/cart.service';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -58,7 +58,7 @@ export class CartComponent implements OnInit, OnDestroy {
           this.cartItems = this.cartItems.map(item => ({
             ...item,
             image_path: `http://localhost:3900/${item.image_path}`,
-            quantity: Math.max(1, Math.min(10, item.quantity)), // Clamp between 1-10
+            quantity: Math.max(1, Math.min(1000, item.quantity)), // Clamp between 1-10
             category_name: item.category_name || 'Uncategorized' // Ensure category_name exists
           }));
           this.calculateTotal();

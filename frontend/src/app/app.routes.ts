@@ -14,6 +14,9 @@ import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { CategoriesComponent } from './admin/categories/categories.component';
 import { ProductsComponent } from './admin/products/products.component';
 import { UsersComponent } from './admin/users/users.component';
+import { InfoComponent } from './components/info/info.component';
+import { OverviewComponent } from './components/info/overview/overview.component';
+import { PurchaseHistoryComponent } from './components/info/purchase-history/purchase-history.component';
 
 export const routes: Routes = [
     { path: 'home', component: HomeComponent },
@@ -26,6 +29,13 @@ export const routes: Routes = [
     {path: 'signup', component: SignupComponent},
     {path: 'contact',component: ContactComponent},
     {path: 'reset-password', component: ForgotPasswordComponent},
+    {path: 'info', component: InfoComponent,
+        children: [
+            {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+            {path: 'dashboard', component: OverviewComponent},
+            {path: 'history', component: PurchaseHistoryComponent}
+        ]
+    },
 
 
     // Protected routes for admin users

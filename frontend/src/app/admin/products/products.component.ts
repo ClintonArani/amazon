@@ -3,11 +3,13 @@ import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angula
 import { ProductService } from '../../services/product.service';
 import { CommonModule } from '@angular/common';
 import { CategoriesService } from '../../services/categories.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { TruncatePipe } from '../../pipes/truncate.pipe'; 
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, TruncatePipe],
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css'],
 })
@@ -22,16 +24,18 @@ export class ProductsComponent implements OnInit {
   showConfirmation: boolean = false;
   productToDelete: any = null;
   selectedFile: File | null = null;
+  imagePreview: SafeUrl | string | null = null;
 
   // Pagination properties
   currentPage: number = 1;
-  itemsPerPage: number = 15;
+  itemsPerPage: number = 10;
   totalPages: number = 1;
 
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
-    private categoriesService: CategoriesService 
+    private categoriesService: CategoriesService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -56,7 +60,7 @@ export class ProductsComponent implements OnInit {
       (response) => {
         this.products = response.products.map((product: any) => ({
           ...product,
-          image_path: `http://localhost:3900/${product.image_path}` // Construct full URL
+          image_path: `http://localhost:3900/${product.image_path}`
         }));
         this.calculateTotalPages();
       },
@@ -96,23 +100,62 @@ export class ProductsComponent implements OnInit {
     this.isEditMode = false;
     this.productForm.reset();
     this.selectedFile = null;
+    this.imagePreview = null;
     this.isModalOpen = true;
   }
 
   openEditProductModal(product: any): void {
     this.isEditMode = true;
     this.selectedProduct = product;
-    this.productForm.patchValue(product);
-    this.selectedFile = null;
+    this.imagePreview = product.image_path;
+    
+    this.productForm.patchValue({
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      stock_quantity: product.stock_quantity,
+      category_id: product.category_id
+    });
+
     this.isModalOpen = true;
   }
 
   closeModal(): void {
     this.isModalOpen = false;
+    this.selectedProduct = null;
+    this.selectedFile = null;
+    this.imagePreview = null;
   }
 
   onFileSelected(event: any): void {
-    this.selectedFile = event.target.files[0];
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.match('image.*')) {
+        this.showSuccessMessage('Only image files are allowed!');
+        return;
+      }
+
+      // Validate file size (2MB max)
+      if (file.size > 2097152) {
+        this.showSuccessMessage('Image must be less than 2MB!');
+        return;
+      }
+
+      this.selectedFile = file;
+      
+      // Create image preview
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreview = this.sanitizer.bypassSecurityTrustUrl(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  triggerFileInput(): void {
+    const fileInput = document.getElementById('imageInput') as HTMLInputElement;
+    fileInput.click();
   }
 
   onSubmit(): void {
@@ -126,8 +169,13 @@ export class ProductsComponent implements OnInit {
     formData.append('price', this.productForm.get('price')?.value);
     formData.append('stock_quantity', this.productForm.get('stock_quantity')?.value);
     formData.append('category_id', this.productForm.get('category_id')?.value);
+
+    // Handle image
     if (this.selectedFile) {
       formData.append('image', this.selectedFile, this.selectedFile.name);
+    } else if (this.isEditMode && !this.selectedFile && this.selectedProduct?.image_path) {
+      // Keep existing image if no new file was selected during edit
+      formData.append('image_path', this.selectedProduct.image_path.replace('http://localhost:3900/', ''));
     }
 
     if (this.isEditMode) {

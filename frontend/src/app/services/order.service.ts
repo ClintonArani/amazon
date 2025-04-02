@@ -29,6 +29,7 @@ export class OrderService {
   checkout(userId: string): Observable<any> {
     return this.http.post(`http://localhost:3900/checkout/${userId}`, {});
   }
+
   getRecentOrders(limit: number = 5): Observable<any> {
     return this.http.get(`${this.apiUrl}/recent?limit=${limit}`).pipe(
       catchError(error => {
@@ -37,7 +38,29 @@ export class OrderService {
       })
     );
   }
+
   getTopProducts(limit: number = 5): Observable<any> {
     return this.http.get(`${this.apiUrl}/top-products?limit=${limit}`);
+  }
+
+  // New endpoints for user dashboard
+  getUserOrders(userId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/user/${userId}`);
+  }
+
+  getUserMonthlySpending(userId: string, months: number = 6): Observable<any> {
+    return this.http.get(`${this.apiUrl}/user/${userId}/monthly-spending?months=${months}`);
+  }
+
+  getUserRecentOrders(userId: string, limit: number = 5): Observable<any> {
+    return this.http.get(`${this.apiUrl}/user/${userId}/recent-orders?limit=${limit}`);
+  }
+
+  getRecommendedProducts(userId: string, limit: number = 5): Observable<any> {
+    return this.http.get(`${this.apiUrl}/user/${userId}/recommended-products?limit=${limit}`);
+  }
+
+  getUserPurchaseHistory(userId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/user/${userId}/purchase-history`);
   }
 }
