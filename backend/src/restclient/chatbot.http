@@ -3,6 +3,6 @@ POST http://localhost:3900/chatbot/ask
 Content-Type: application/json
 
 {
-    "message": "How do you protect my privacy?"
+    "message": "hi"
 }
 

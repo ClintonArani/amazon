@@ -7,3 +7,5 @@ END
 
 drop procedure switchRoles
 
+
+select email from users where firstName = 'Morine'

@@ -11,11 +11,12 @@ import { jwtDecode } from 'jwt-decode';
 import { Category, DecodedToken, IApiResponse, IRecommendedProductsData, IProduct } from '../../interfaces/mixed';
 import { ChatbotComponent } from "../chatbot/chatbot.component";
 import { RecommendedProductsService } from '../../services/recommendedproduct.service';
+import { FooterComponent } from '../footer/footer.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, HeaderComponent, ChatbotComponent],
+  imports: [CommonModule, RouterLink, HeaderComponent, ChatbotComponent, FooterComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

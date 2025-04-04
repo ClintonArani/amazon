@@ -13,3 +13,12 @@ BEGIN
         p.id = @id AND 
         p.isDeleted = 0;
 END
+
+
+select * from users
+
+delete from orders where isDelete = FALSE
+
+select * from orders
+
+select * from order_items

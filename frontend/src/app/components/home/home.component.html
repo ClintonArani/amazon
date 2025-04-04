@@ -68,7 +68,7 @@
   </div>
 
   <!-- Pagination Controls -->
-  <div *ngIf="filteredProducts.length > 0" class="pagination-container text-center mt-4">
+  <div *ngIf="filteredProducts.length > 0" class="pagination-container text-center mt-4 mb-4">
     <button class="btn btn-outline-primary mx-1" 
             (click)="previousPage()" 
             [disabled]="currentPage === 1">
@@ -100,3 +100,4 @@
   (closed)="onChatClosed()">
 </app-chatbot>
 </div>
+<app-footer></app-footer>

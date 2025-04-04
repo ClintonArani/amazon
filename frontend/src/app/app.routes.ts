@@ -25,6 +25,7 @@ export const routes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},
     { path: 'product-details/:id',component: ProductDetailsComponent},
     { path: 'cart', component: CartComponent },
+    {path: 'contact', component: ContactComponent},
     { path: 'checkout', component: CheckoutComponent },
     { path: 'profile', component: UserProfileComponent },
     {path: 'login', component: LoginComponent},
@@ -56,5 +57,7 @@ export const routes: Routes = [
         ]
     },
     { path: '**', redirectTo: '/login' } , 
+
+    
 
 ];
