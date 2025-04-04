@@ -9,3 +9,18 @@ export interface Product {
     quantity?: number; 
   }
   
+
+  export interface IProduct {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+    oldPrice?: number;
+    image_path: string;
+    category_id: string;
+    category_name?: string;
+    stock_quantity: number;
+    isDeleted: boolean;
+    createdAt: string;
+    updatedAt: string;
+  }

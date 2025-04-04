@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { IApiResponse, IRecommendedProductsData } from '../interfaces/mixed';
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
   private apiUrl = 'http://localhost:3900/products';
-
+  private apiLink = 'http://localhost:3900';
   constructor(private http: HttpClient) {}
 
   addProduct(productData: FormData): Observable<any> {
@@ -24,5 +26,10 @@ export class ProductService {
   }
   deleteProduct(productId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/delete/${productId}`);
+  }
+  getRecommendedProducts(userId: string, limit: number): Observable<IApiResponse<IRecommendedProductsData>> {
+    return this.http.get<IApiResponse<IRecommendedProductsData>>(
+      `${this.apiUrl}/orders/user/${userId}/recommended-products?limit=${limit}`
+    );
   }
 }

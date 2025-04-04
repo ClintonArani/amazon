@@ -36,7 +36,7 @@ GET http://localhost:3900/orders/user/dfe06197-a202-4a77-8fc4-b35fb79ed602/recen
 Content-Type: application/json
 
 ### GET RECOMMENDED PRODUCTS
-GET http://localhost:3900/orders/user/dfe06197-a202-4a77-8fc4-b35fb79ed602/recommended-products?limit=5
+GET http://localhost:3900/orders/user/dfe06197-a202-4a77-8fc4-b35fb79ed602/recommended-products?limit=4
 Content-Type: application/json
 
 ### GET USER PURCHASE HISTORY

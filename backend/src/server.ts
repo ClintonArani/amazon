@@ -11,6 +11,7 @@ import cart_item_router from './routers/cart-item.router';
 import checkout_router from './routers/checkout.router';
 import order_router from './routers/order.router';
 import * as path from 'path';
+import chatbotRouter from './routers/chatbot.router';
 
 
 dotenv.config();
@@ -38,6 +39,7 @@ app.use('/categories', category_router);
 app.use('/cart-items', cart_item_router);
 app.use('/checkout', checkout_router);
 app.use('/orders', order_router);
+app.use('/chatbot', chatbotRouter)
 // Serve static files from the "uploads" directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

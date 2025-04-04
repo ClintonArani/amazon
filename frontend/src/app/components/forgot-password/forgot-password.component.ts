@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HeaderComponent } from "../header/header.component";
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router'; // Add Router import
+import { ResetService } from '../../services/reset.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -13,8 +14,15 @@ import { RouterLink } from '@angular/router';
 })
 export class ForgotPasswordComponent implements OnInit {
   forgotPasswordForm: FormGroup;
+  isLoading = false;
+  message = '';
+  isSuccess = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private resetService: ResetService,
+    private router: Router // Inject Router
+  ) {
     this.forgotPasswordForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
     });
@@ -24,10 +32,31 @@ export class ForgotPasswordComponent implements OnInit {
 
   onSubmit(): void {
     if (this.forgotPasswordForm.valid) {
-      console.log('Form Submitted', this.forgotPasswordForm.value);
-      // Add your forgot password logic here (e.g., send reset link to email)
+      this.isLoading = true;
+      this.message = '';
+      const email = this.forgotPasswordForm.value.email;
+      
+      this.resetService.forgotPassword(email).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          this.isSuccess = true;
+          this.message = response.message;
+          
+          // Redirect to change-password after 3 seconds
+          setTimeout(() => {
+            this.router.navigate(['/change-password'], {
+              queryParams: { email: email } // Pass email as query parameter
+            });
+          }, 3000);
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.isSuccess = false;
+          this.message = error.error.message || 'Failed to send reset code. Please try again.';
+        }
+      });
     } else {
-      console.log('Form is invalid');
+      this.forgotPasswordForm.markAllAsTouched();
     }
   }
 }

@@ -17,6 +17,8 @@ import { UsersComponent } from './admin/users/users.component';
 import { InfoComponent } from './components/info/info.component';
 import { OverviewComponent } from './components/info/overview/overview.component';
 import { PurchaseHistoryComponent } from './components/info/purchase-history/purchase-history.component';
+import { ChangepasswordComponent } from './components/changepassword/changepassword.component';
+import { ChatbotComponent } from './components/chatbot/chatbot.component';
 
 export const routes: Routes = [
     { path: 'home', component: HomeComponent },
@@ -29,6 +31,8 @@ export const routes: Routes = [
     {path: 'signup', component: SignupComponent},
     {path: 'contact',component: ContactComponent},
     {path: 'reset-password', component: ForgotPasswordComponent},
+    {path: 'change-password', component: ChangepasswordComponent},
+    {path: 'chatbot', component: ChatbotComponent},
     {path: 'info', component: InfoComponent,
         children: [
             {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
