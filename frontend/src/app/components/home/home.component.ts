@@ -107,7 +107,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error loading recommended products:', error);
-        this.recommendedError = error.message || 'Failed to load recommendations. Please try again later.';
+        this.recommendedError = 'Failed to load recommendations. Please try again later.';
         this.isLoadingRecommended = false;
         this.showRecommendedSection = false;
       }
